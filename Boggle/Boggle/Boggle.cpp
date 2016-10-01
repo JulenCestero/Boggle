@@ -6,15 +6,22 @@
 
 static vector<int> letters = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
 /*
- * Función para calcular el total de números de una palabra
+ * Función para calcular el total de puntos de una palabra
  */
-int calcPoints(string word)
+unsigned int calcPoints(const string word)
 {
-	int totalPoints = 0;
+	unsigned int totalPoints = 0;
+	unsigned int differentWords = 0;
+	// Puntos por letra
 	for (size_t ii = 0; ii < word.length(); ii++) {
-		int a = word[ii];
 		totalPoints += letters[word[ii] - 97];
 	}
+	// Puntos por longitud
+	totalPoints += word.length() - 2;
+
+	// Puntos por entropía
+	//differentWords = std::count(word.begin(), word.end(), '_');
+
 	return totalPoints;
 }
 
