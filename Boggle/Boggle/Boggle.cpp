@@ -4,6 +4,31 @@
 #include "stdafx.h"
 #include "Classes.h"
 
+static vector<int> letters = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
+/*
+ * Función para calcular el total de puntos de una palabra
+ */
+unsigned int calcPoints(const string word)
+{
+	unsigned int totalPoints = 0;
+	unsigned int differentWords = 0;
+	// Puntos por letra
+	for (size_t ii = 0; ii < word.length(); ii++) {
+		totalPoints += letters[word[ii] - 97];
+	}
+	// Puntos por longitud
+	totalPoints += word.length() - 2; // Asegurarse de que nunca salga un numero negativo aqui
+
+	// Puntos por entropía
+	vector<char> aux;
+	for (size_t ii = 0; ii < word.length(); ii++) {
+		if (find(aux.begin(), aux.end(), word[ii]) == aux.end()) {
+			aux.push_back(word[ii]);
+			differentWords++;
+		}
+	}
+	return totalPoints + differentWords;
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -16,7 +41,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	FILE *fDict;
 	const char* fileName = "input1.txt";
 	fopen_s(&fDict, fileName, "r");
-	vector<string> words;
 
 	while(fgets(in, N*N + 1, fDict)){
 		trie->addWord(in);
