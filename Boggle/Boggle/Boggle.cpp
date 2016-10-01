@@ -1,36 +1,35 @@
 // Boggle.cpp: define el punto de entrada de la aplicación de consola.
 //
-
+#include <cstdio>
 #include "stdafx.h"
 #include "Classes.h"
 
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-  Trie* trie = new Trie();
-	ifstream dictionary("input1.txt");
-	string board, hash, line;
 	const auto start = clock();
+	const int N = 4;
+	char in[N * N + 1]; // max length of a word
+	Trie* trie = new Trie();
+	string board, hash, line;
 
-	getline(dictionary, board);
-	getline(dictionary, hash);
+	FILE *fDict;
+	const char* fileName = "input1.txt";
+	fopen_s(&fDict, fileName, "r");
+	vector<string> words;
 
-	int cont = 0;
-
-	while (getline(dictionary, line)){
-		if(line.size() > 3){
-			trie->addWord(line);
-		}
-		cont++;
-		if(cont == 100)break;
+	while(fgets(in, N*N + 1, fDict)){
+		trie->addWord(in);
 	}
-	dictionary.close();
 
 	cout<<(clock()-start)/(float)CLOCKS_PER_SEC<<"s"<<endl;
 
-  if (trie->searchWord("kaixo"))
-     cout << "Found kaixo" << endl;
+	const auto start1 = clock();
 
+  if (trie->searchWord("hello"))
+     cout << "Found hello" << endl;
+
+	/*
   if (trie->searchWord("abandonments"))
       cout << "Found abandonments" << endl;
 
@@ -41,9 +40,9 @@ int _tmain(int argc, _TCHAR* argv[])
       cout << "Found abdomes" << endl;
 
   if (trie->searchWord("geography"))
-      cout << "Found Balloon" << endl;
+      cout << "Found Balloon" << endl;*/
 
-	//cout<<(clock()-start)/(float)CLOCKS_PER_SEC<<"s"<<endl;
+	cout<<(clock()-start1)/(float)CLOCKS_PER_SEC<<"s"<<endl;
 
   delete trie;
 	return 0;
