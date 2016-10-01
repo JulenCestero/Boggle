@@ -4,29 +4,47 @@
 #include "stdafx.h"
 #include "Classes.h"
 
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Trie* trie = new Trie();
-  trie->addWord("Hello");
-  trie->addWord("Balloon");
-  trie->addWord("Ball");
+  Trie* trie = new Trie();
+	ifstream dictionary("input1.txt");
+	string board, hash, line;
+	const auto start = clock();
 
-  if (trie->searchWord("Hell"))
-     cout << "Found Hell" << endl;
+	getline(dictionary, board);
+	getline(dictionary, hash);
 
-  if (trie->searchWord("Hello"))
-      cout << "Found Hello" << endl;
+	int cont = 0;
 
-  if (trie->searchWord("Helloo"))
-      cout << "Found Helloo" << endl;
+	while (getline(dictionary, line)){
+		if(line.size() > 3){
+			trie->addWord(line);
+		}
+		cont++;
+		if(cont == 100)break;
+	}
+	dictionary.close();
 
-  if (trie->searchWord("Ball"))
-      cout << "Found Ball" << endl;
+	cout<<(clock()-start)/(float)CLOCKS_PER_SEC<<"s"<<endl;
 
-  if (trie->searchWord("Balloon"))
+  if (trie->searchWord("kaixo"))
+     cout << "Found kaixo" << endl;
+
+  if (trie->searchWord("abandonments"))
+      cout << "Found abandonments" << endl;
+
+  if (trie->searchWord("abdomens"))
+      cout << "Found abdomens" << endl;
+
+  if (trie->searchWord("abdomes"))
+      cout << "Found abdomes" << endl;
+
+  if (trie->searchWord("geography"))
       cout << "Found Balloon" << endl;
+
+	//cout<<(clock()-start)/(float)CLOCKS_PER_SEC<<"s"<<endl;
 
   delete trie;
 	return 0;
 }
-
