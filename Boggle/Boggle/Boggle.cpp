@@ -17,12 +17,17 @@ unsigned int calcPoints(const string word)
 		totalPoints += letters[word[ii] - 97];
 	}
 	// Puntos por longitud
-	totalPoints += word.length() - 2;
+	totalPoints += word.length() - 2; // Asegurarse de que nunca salga un numero negativo aqui
 
 	// Puntos por entropía
-	//differentWords = std::count(word.begin(), word.end(), '_');
-
-	return totalPoints;
+	vector<char> aux;
+	for (size_t ii = 0; ii < word.length(); ii++) {
+		if (find(aux.begin(), aux.end(), word[ii]) == aux.end()) {
+			aux.push_back(word[ii]);
+			differentWords++;
+		}
+	}
+	return totalPoints + differentWords;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
