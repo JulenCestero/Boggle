@@ -4,3 +4,8 @@ ipch
 *.opensdf
 Boggle/Boggle/Debug/
 Boggle/Boggle.VC.db
+*.db
+*.opendb
+Boggle/Debug/
+Boggle/blogspot/blogspot/Debug/
+

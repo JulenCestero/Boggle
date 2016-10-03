@@ -9,9 +9,12 @@
 
 #include <stdio.h>
 #include <tchar.h>
+#include <fstream>
 #include <iostream>
 #include <vector>
 #include <string>
+#include <ctime>
+#include <algorithm>
 using namespace std;
 
 

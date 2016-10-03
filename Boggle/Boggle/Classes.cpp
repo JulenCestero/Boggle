@@ -3,7 +3,7 @@
 
 Node* Node::findChild(char c)
 {
-    for (int i = 0; i < mChildren.size(); i++){
+    for (unsigned int i = 0; i < mChildren.size(); i++){
 			Node* tmp = mChildren.at(i);
 			if (tmp->content() == c){
 				return tmp;
@@ -22,16 +22,11 @@ Trie::~Trie()
    // Free memory
 }
 
+
 void Trie::addWord(string s)
 {
   Node* current = root;
-
-  if (s.length() == 0){
-    current->setWordMarker(); // an empty word
-    return;
-  }
-
-  for(int i = 0; i < s.length(); i++){        
+  for(unsigned int i = 0; i < s.length(); i++){        
     Node* child = current->findChild(s[i]);
     if (child != NULL){
       current = child;
@@ -51,7 +46,7 @@ bool Trie::searchWord(string s)
   Node* current = root;
 
   while (current != NULL){
-      for (int i = 0; i < s.length(); i++) {
+      for (unsigned int i = 0; i < s.length(); i++) {
         Node* tmp = current->findChild(s[i]);
         if (tmp == NULL)
             return false;
