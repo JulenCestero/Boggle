@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "Classes.h"
 
-static vector<int> letters = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
+static unsigned int letters[] = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
 /*
  * Función para calcular el total de puntos de una palabra
  */
