@@ -4,10 +4,11 @@
 #include "stdafx.h"
 #include "Classes.h"
 
+/*
 static vector<int> letters = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
 /*
  * Función para calcular el total de puntos de una palabra
- */
+ 
 unsigned int calcPoints(const string word)
 {
 	unsigned int totalPoints = 0;
@@ -28,7 +29,7 @@ unsigned int calcPoints(const string word)
 		}
 	}
 	return totalPoints + differentWords;
-}
+}*/
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -38,13 +39,22 @@ int _tmain(int argc, _TCHAR* argv[])
 	Trie* trie = new Trie();
 	string board, hash, line;
 
-	FILE *fDict;
+
+	// entrada estandar
+	getline (std::cin,board);
+	getline (std::cin,hash);
+	while(!cin.eof()){
+		getline (std::cin,line);
+		trie->addWord(line);
+	}
+
+	/*FILE *fDict;
 	const char* fileName = "input1.txt";
 	fopen_s(&fDict, fileName, "r");
 
 	while(fgets(in, N*N + 1, fDict)){
 		trie->addWord(in);
-	}
+	}*/
 
 	cout<<(clock()-start)/(float)CLOCKS_PER_SEC<<"s"<<endl;
 
