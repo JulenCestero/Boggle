@@ -7,7 +7,7 @@
 Trie* trie = new Trie();
 static unsigned int letters[] = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
 vector<string> foundWords;
-vector<unsigned int> foundPunctuation;
+vector<unsigned int> foundScore;
 
 /*
  * Function to calculate the points of a word
@@ -40,58 +40,51 @@ unsigned int calcPoints(const string word)
 // Esta función devuelve un 1 o un 0 dependiendo de si ha encontrado una palabra o no (podemos hacer
 // que si encuentra varias, devuelva otro número, eso cambiaría el tipo de argumento de salida de
 // bool a int). Además de eso, cuando encuentre una palabra hará un push_back paralelo al vector
-// foundWords y foundPunctuation donde se guardarán la palabra encontrada y su puntuación.
+// foundWords y foundScore donde se guardarán la palabra encontrada y su puntuación.
 bool findWordsPlease(string word) {
-	for (unsigned int jj = 97; jj <= 122; jj++) { // Separo el primer y ultimo caso para no encontrarnos con un branch problem a la hora de paralelizar
-		string letter;
-		letter = char(jj);
-		string newWord = letter + word;
-		if (trie->searchWord(newWord)) {
-			foundWords.push_back(newWord);
-			foundPunctuation.push_back(calcPoints(newWord));
+	/*for (unsigned int jj = 97; jj <= 122; jj++) { // Separo el primer y ultimo caso para no encontrarnos con un branch problem a la hora de paralelizar
+		string _newWord = char(jj) + word;
+		string newWord_ = word + char(jj);
+		if (trie->searchWord(_newWord)) {
+			foundWords.push_back(_newWord);
+			foundScore.push_back(calcPoints(_newWord));
 		}
-	}
-	for (unsigned int jj = 97; jj <= 122; jj++) {
-		string letter;
-		letter = char(jj);
-		string newWord = word + letter;
-		if (trie->searchWord(newWord)) {
-			foundWords.push_back(newWord);
-			foundPunctuation.push_back(calcPoints(newWord));
+		if (trie->searchWord(newWord_)) {
+			foundWords.push_back(newWord_);
+			foundScore.push_back(calcPoints(newWord_));
 		}
-	}
-	for (size_t ii = 1; ii < word.length(); ii++) {
+	}*/
+	for (size_t ii = 0; ii <= word.length(); ii++) {	// empezando desde 0 hasta <= wordlength se puede no hacer el for de arriba
 		string left = "";
 		string right = "";
-		for (size_t jj = 0; jj < ii; jj++) {
+		for (size_t jj = 0; jj < ii; jj++) { //optimizable?
 			left += word[jj];
 		}
-		for (size_t jj = ii; jj < word.length(); jj++) {
-			right += word[jj];
+		for (size_t kk = ii; kk < word.length(); kk++) { //optimizable?
+			right += word[kk];
 		}
 		for (unsigned int jj = 97; jj <= 122; jj++) {
-			string letter;
-			letter = char(jj);
-			string newWord = left + letter + right;
+			string newWord = left + char(jj) + right;
 			if (trie->searchWord(newWord)) {
 				foundWords.push_back(newWord);
-				foundPunctuation.push_back(calcPoints(newWord));
+				foundScore.push_back(calcPoints(newWord));
 			}
 		}
 	}
+	return 1; // ?
 }
 
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	const auto start = clock();
-	/* INITIALIZATIONS OF VARIABLES */
-	string board_aux, hash, line;
+	/* INITIALIZATION OF VARIABLES */
+	string boardstring, hash, line;
 	char board[4][4];
 
 
 	/* Charge Trie, hash and auxiliar variable for board */
-	getline (cin,board_aux);
+	getline (cin,boardstring);
 	getline (cin,hash);
 	while(!cin.eof()){
 		getline (cin,line);
@@ -99,15 +92,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	
 	/* Charge the letters into the board */
-	unsigned int tmp = 0;
 	for(unsigned int ii = 0; ii < 4; ii++){
 		for(unsigned int jj = 0; jj < 4; jj++){
-			board[ii][jj] = board_aux[tmp];
-			tmp++;
+			board[ii][jj] = boardstring[4*ii + jj];
 		}
 	}
 	
-	bool a = findWordsPlease("hllo");
+	bool a = findWordsPlease("hell");
+	for (int i = 0; i<foundWords.size(); i++){
+		cout << foundWords[i] << endl;
+	}
 	cout << (clock()-start) / (float)CLOCKS_PER_SEC << "s" << endl; // tiempo en cargar el diccionario: 120ms
 	delete trie;
 	return 0;
