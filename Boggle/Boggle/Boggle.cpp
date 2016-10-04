@@ -37,7 +37,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	const auto start = clock();
 	Trie* trie = new Trie();
 	string board, hash, line;
-
 	// entrada estandar
 	getline (std::cin,board);
 	getline (std::cin,hash);
@@ -45,16 +44,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		getline (std::cin,line);
 		trie->addWord(line);
 	}
+	cout<<(clock()-start)/(float)CLOCKS_PER_SEC<<"s"<<endl; // tiempo en cargar el diccionario: 120ms
 
-	cout<<(clock()-start)/(float)CLOCKS_PER_SEC<<"s"<<endl;
-
-	const auto start1 = clock(); // reloj 2
-
-  if (trie->searchWord("hello"))
-     cout << "Found hello" << endl;
-
-  cout<<(clock()-start1)/(float)CLOCKS_PER_SEC<<"s"<<endl;
-
-  delete trie;
+	if (trie->searchWord("hello")) cout << "Found hello" << endl;
+	delete trie;
 	return 0;
 }
