@@ -1,4 +1,4 @@
-// Boggle.cpp: define el punto de entrada de la aplicación de consola.
+// Boggle.cpp: define el punto de partida entre el punto de divergencia del 1% y la distopía apocalíptica
 //
 #include "stdafx.h"
 #include "Classes.h"
