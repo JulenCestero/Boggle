@@ -1,4 +1,4 @@
-// Boggle.cpp: define el punto de entrada de la aplicación de consola.
+// Boggle.cpp: define el punto de partida entre el punto de divergencia del 1% y la distopía apocalíptica
 //
 #include "stdafx.h"
 #include "Classes.h"
@@ -107,7 +107,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 	}
 	
-	bool a = findWordsPlease("hllo");
+	bool a = findWordsPlease("hllo"); // tiempo en encontrar todas las combinaciones de una palabra de 5 caracteres: 0ms
 	cout << (clock()-start) / (float)CLOCKS_PER_SEC << "s" << endl; // tiempo en cargar el diccionario: 120ms
 	delete trie;
 	return 0;
