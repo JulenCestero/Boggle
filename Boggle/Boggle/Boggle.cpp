@@ -35,8 +35,6 @@ unsigned int calcPoints(const string word)
 int _tmain(int argc, _TCHAR* argv[])
 {
 	const auto start = clock();
-	const int N = 4;
-	char in[N * N + 1]; // max length of a word
 	Trie* trie = new Trie();
 	string board, hash, line;
 
