@@ -46,7 +46,8 @@ bool findWordsPlease(string word) {
 		foundWords.push_back(word);
 		foundPunctuation.push_back(calcPoints(word));
 	}
-	for (unsigned int jj = 97; jj <= 122; jj++) { // Separo el primer y ultimo caso para no encontrarnos con un branch problem a la hora de paralelizar
+	// Separo el primer y ultimo caso para no encontrarnos con un branch problem a la hora de paralelizar
+	for (unsigned int jj = 97; jj <= 122; jj++) { // Primer caracter
 		string letter;
 		letter = char(jj);
 		string newWord = letter + word;
@@ -55,7 +56,7 @@ bool findWordsPlease(string word) {
 			foundPunctuation.push_back(calcPoints(newWord));
 		}
 	}
-	for (unsigned int jj = 97; jj <= 122; jj++) {
+	for (unsigned int jj = 97; jj <= 122; jj++) { // Ultimo caracter
 		string letter;
 		letter = char(jj);
 		string newWord = word + letter;
