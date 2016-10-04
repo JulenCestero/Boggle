@@ -4,11 +4,14 @@
 #include "stdafx.h"
 #include "Classes.h"
 
-
+/* GLOBAL VARIABLES */
+Trie* trie = new Trie();
 static unsigned int letters[] = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
+vector<string> foundWords;
+vector<unsigned int> foundPunctuation;
 
 /*
- * Función para calcular el total de puntos de una palabra
+ * Function to calculate the points of a word
  */
 unsigned int calcPoints(const string word)
 {
@@ -32,38 +35,61 @@ unsigned int calcPoints(const string word)
 	return totalPoints + differentWords;
 }
 
+/*
+ * Function to search all letter combination possible 
+ */
+// Esta función devuelve un 1 o un 0 dependiendo de si ha encontrado una palabra o no (podemos hacer
+// que si encuentra varias, devuelva otro número, eso cambiaría el tipo de argumento de salida de
+// bool a int). Además de eso, cuando encuentre una palabra hará un push_back paralelo al vector
+// foundWords y foundPunctuation donde se guardarán la palabra encontrada y su puntuación.
+bool findWordsPlease(string word) {
+	for (unsigned int jj = 97; jj <= 122; jj++) { // Separo el primer y ultimo caso para no encontrarnos con un branch problem a la hora de paralelizar
+		string letter;
+		letter = char(jj);
+		string newWord = letter + word;
+		if (trie->searchWord(newWord)) {
+			foundWords.push_back(newWord);
+			foundPunctuation.push_back(calcPoints(newWord));
+		}
+	}
+	for (size_t ii = 1; ii < word.length(); ii++) {
+		for (unsigned int jj = 97; jj <= 122; jj++) {
+						
+		}
+	}
+}
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	const auto start = clock();
+
 	/* INITIALIZATIONS OF VARIABLES */
 	string board_aux, hash, line;
-	vector<vector<char>> board;
-	Trie* trie = new Trie();
-	
+	char board[4][4];
 
-	/* Charge Trie, hash and auxiliar variable for board*/
-	getline (std::cin,board_aux);
-	getline (std::cin,hash);
+
+	/* Charge Trie, hash and auxiliar variable for board */
+	getline (cin,board_aux);
+	getline (cin,hash);
 	while(!cin.eof()){
-		getline (std::cin,line);
+		getline (cin,line);
 		trie->addWord(line);
 	}
 	
-	/* Charge the letters in the board */
+	/* Charge the letters into the board */
 	unsigned int tmp = 0;
-	vector<char> tmp2;
 	for(unsigned int ii = 0; ii < 4; ii++){
-		board.push_back(tmp2);
 		for(unsigned int jj = 0; jj < 4; jj++){
-			board[ii].push_back(board_aux[tmp]);
+			board[ii][jj] = board_aux[tmp];
 			tmp++;
 		}
 	}
 
+	bool a = findWordsPlease("hell");
+	//cout << a;
+	/* Finishing the program */
 	cout << (clock()-start) / (float)CLOCKS_PER_SEC << "s" << endl; // tiempo en cargar el diccionario: 120ms
-
-	//if (trie->searchWord("hello")) cout << "Found hello" << endl; // Ejemplo
 	delete trie;
 	return 0;
 }

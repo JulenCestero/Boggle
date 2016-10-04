@@ -24,7 +24,6 @@ public:
     ~Trie();
     void addWord(string s);
     bool searchWord(string s);
-    void deleteWord(string s);
 private:
     Node* root;
 };
