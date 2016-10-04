@@ -42,6 +42,10 @@ unsigned int calcPoints(const string word)
 // bool a int). Además de eso, cuando encuentre una palabra hará un push_back paralelo al vector
 // foundWords y foundPunctuation donde se guardarán la palabra encontrada y su puntuación.
 bool findWordsPlease(string word) {
+	if (trie->searchWord(word)) {
+		foundWords.push_back(word);
+		foundPunctuation.push_back(calcPoints(word));
+	}
 	for (unsigned int jj = 97; jj <= 122; jj++) { // Separo el primer y ultimo caso para no encontrarnos con un branch problem a la hora de paralelizar
 		string letter;
 		letter = char(jj);
