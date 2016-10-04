@@ -72,7 +72,7 @@ bool findWordsPlease(string word) {
 		for (unsigned int jj = 97; jj <= 122; jj++) {
 			string letter;
 			letter = char(jj);
-			string newWord = left + word + letter;
+			string newWord = left + letter + right;
 			if (trie->searchWord(newWord)) {
 				foundWords.push_back(newWord);
 				foundPunctuation.push_back(calcPoints(newWord));
@@ -85,7 +85,6 @@ bool findWordsPlease(string word) {
 int _tmain(int argc, _TCHAR* argv[])
 {
 	const auto start = clock();
-
 	/* INITIALIZATIONS OF VARIABLES */
 	string board_aux, hash, line;
 	char board[4][4];
@@ -107,8 +106,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			tmp++;
 		}
 	}
-
-	bool a = findWordsPlease("hell");
+	
+	bool a = findWordsPlease("hllo");
 	cout << (clock()-start) / (float)CLOCKS_PER_SEC << "s" << endl; // tiempo en cargar el diccionario: 120ms
 	delete trie;
 	return 0;
