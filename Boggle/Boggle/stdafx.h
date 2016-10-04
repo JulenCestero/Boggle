@@ -15,6 +15,7 @@
 #include <string>
 #include <ctime>
 #include <algorithm>
+#include <cstdio>
 using namespace std;
 
 

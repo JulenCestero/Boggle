@@ -1,6 +1,5 @@
 // Boggle.cpp: define el punto de entrada de la aplicación de consola.
 //
-#include <cstdio>
 #include "stdafx.h"
 #include "Classes.h"
 
@@ -52,9 +51,32 @@ bool findWordsPlease(string word) {
 			foundPunctuation.push_back(calcPoints(newWord));
 		}
 	}
+	for (unsigned int jj = 97; jj <= 122; jj++) {
+		string letter;
+		letter = char(jj);
+		string newWord = word + letter;
+		if (trie->searchWord(newWord)) {
+			foundWords.push_back(newWord);
+			foundPunctuation.push_back(calcPoints(newWord));
+		}
+	}
 	for (size_t ii = 1; ii < word.length(); ii++) {
+		string left = "";
+		string right = "";
+		for (size_t jj = 0; jj < ii; jj++) {
+			left += word[jj];
+		}
+		for (size_t jj = ii; jj < word.length(); jj++) {
+			right += word[jj];
+		}
 		for (unsigned int jj = 97; jj <= 122; jj++) {
-						
+			string letter;
+			letter = char(jj);
+			string newWord = left + word + letter;
+			if (trie->searchWord(newWord)) {
+				foundWords.push_back(newWord);
+				foundPunctuation.push_back(calcPoints(newWord));
+			}
 		}
 	}
 }
@@ -87,8 +109,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	bool a = findWordsPlease("hell");
-	//cout << a;
-	/* Finishing the program */
 	cout << (clock()-start) / (float)CLOCKS_PER_SEC << "s" << endl; // tiempo en cargar el diccionario: 120ms
 	delete trie;
 	return 0;
