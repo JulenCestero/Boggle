@@ -32,21 +32,38 @@ unsigned int calcPoints(const string word)
 	return totalPoints + differentWords;
 }
 
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	const auto start = clock();
+	/* INITIALIZATIONS OF VARIABLES */
+	string board_aux, hash, line;
+	vector<vector<char>> board;
 	Trie* trie = new Trie();
-	string board, hash, line;
-	// entrada estandar
-	getline (std::cin,board);
+	
+
+	/* Charge Trie, hash and auxiliar variable for board*/
+	getline (std::cin,board_aux);
 	getline (std::cin,hash);
 	while(!cin.eof()){
 		getline (std::cin,line);
 		trie->addWord(line);
 	}
-	cout<<(clock()-start)/(float)CLOCKS_PER_SEC<<"s"<<endl; // tiempo en cargar el diccionario: 120ms
+	
+	/* Charge the letters in the board */
+	unsigned int tmp = 0;
+	vector<char> tmp2;
+	for(unsigned int ii = 0; ii < 4; ii++){
+		board.push_back(tmp2);
+		for(unsigned int jj = 0; jj < 4; jj++){
+			board[ii].push_back(board_aux[tmp]);
+			tmp++;
+		}
+	}
 
-	if (trie->searchWord("hello")) cout << "Found hello" << endl;
+	cout << (clock()-start) / (float)CLOCKS_PER_SEC << "s" << endl; // tiempo en cargar el diccionario: 120ms
+
+	//if (trie->searchWord("hello")) cout << "Found hello" << endl; // Ejemplo
 	delete trie;
 	return 0;
 }
