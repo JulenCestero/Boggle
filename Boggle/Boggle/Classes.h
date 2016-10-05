@@ -23,7 +23,8 @@ public:
     Trie();
     ~Trie();
     void addWord(string s);
-    bool searchWord(string s);
+    int consultTrie(string s);
+		bool checkSecondNode(string s);
 private:
     Node* root;
 };

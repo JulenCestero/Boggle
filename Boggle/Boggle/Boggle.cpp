@@ -8,6 +8,7 @@ Trie* trie = new Trie();
 static unsigned int letters[] = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
 vector<string> foundWords;
 vector<unsigned int> foundScore;
+char board[4][4];
 
 /*
  * Function to calculate the points of a word
@@ -42,18 +43,6 @@ unsigned int calcPoints(const string word)
 // bool a int). Además de eso, cuando encuentre una palabra hará un push_back paralelo al vector
 // foundWords y foundScore donde se guardarán la palabra encontrada y su puntuación.
 bool findWordsPlease(string word) {
-	/*for (unsigned int jj = 97; jj <= 122; jj++) { // Separo el primer y ultimo caso para no encontrarnos con un branch problem a la hora de paralelizar
-		string _newWord = char(jj) + word;
-		string newWord_ = word + char(jj);
-		if (trie->searchWord(_newWord)) {
-			foundWords.push_back(_newWord);
-			foundScore.push_back(calcPoints(_newWord));
-		}
-		if (trie->searchWord(newWord_)) {
-			foundWords.push_back(newWord_);
-			foundScore.push_back(calcPoints(newWord_));
-		}
-	}*/
 	for (size_t ii = 0; ii <= word.length(); ii++) {	// empezando desde 0 hasta <= wordlength se puede no hacer el for de arriba
 		string left = "";
 		string right = "";
@@ -65,7 +54,7 @@ bool findWordsPlease(string word) {
 		}
 		for (unsigned int jj = 97; jj <= 122; jj++) {
 			string newWord = left + char(jj) + right;
-			if (trie->searchWord(newWord)) {
+			if (trie->consultTrie(newWord) == 2) {
 				foundWords.push_back(newWord);
 				foundScore.push_back(calcPoints(newWord));
 			}
@@ -74,14 +63,11 @@ bool findWordsPlease(string word) {
 	return 1; // ?
 }
 
-
 int _tmain(int argc, _TCHAR* argv[])
 {
 	const auto start = clock();
 	/* INITIALIZATION OF VARIABLES */
 	string boardstring, hash, line;
-	char board[4][4];
-
 
 	/* Charge Trie, hash and auxiliar variable for board */
 	getline (cin,boardstring);
@@ -97,12 +83,23 @@ int _tmain(int argc, _TCHAR* argv[])
 			board[ii][jj] = boardstring[4*ii + jj];
 		}
 	}
+
+	//prueba a ver si detecta que vamos bien
+	string word = "hell";
+	//cout << trie->consultTrie(word) << endl;
+
+	// prueba de checkear 2 nodos por debajo
+	string prueba = "abg";
+	trie->checkSecondNode(prueba);
+
+	// ANE ESTA EN MODO DE PRUEBA ASI QUE EL INPUT ES input2.txt PORQUE SI NO ME MUERO 
+	// SI VAS A HACER ALGO CON input1.txt CAMBIALO SIN PROBLEMAS PERO AVISAAAAAAAAAAAA
 	
-	bool a = findWordsPlease("hell");
+	//bool a = findWordsPlease("hell");
 	for (int i = 0; i<foundWords.size(); i++){
 		cout << foundWords[i] << endl;
 	}
-	cout << (clock()-start) / (float)CLOCKS_PER_SEC << "s" << endl; // tiempo en cargar el diccionario: 120ms
+	cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl; // tiempo en cargar el diccionario: 120ms
 	delete trie;
 	return 0;
 }
