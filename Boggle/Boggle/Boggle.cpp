@@ -4,11 +4,14 @@
 #include "Classes.h"
 
 /* GLOBAL VARIABLES */
+
+#define DIM 2
 Trie* trie = new Trie();
 static unsigned int letters[] = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
 vector<string> foundWords;
 vector<unsigned int> foundScore;
-char board[4][4];
+char board[DIM][DIM];
+bool visited[DIM][DIM];
 
 /*
  * Function to calculate the points of a word
@@ -37,11 +40,12 @@ unsigned int calcPoints(const string word)
 
 /*
  * Function to search all letter combination possible 
- */
-// Esta función devuelve un 1 o un 0 dependiendo de si ha encontrado una palabra o no (podemos hacer
-// que si encuentra varias, devuelva otro número, eso cambiaría el tipo de argumento de salida de
-// bool a int). Además de eso, cuando encuentre una palabra hará un push_back paralelo al vector
-// foundWords y foundScore donde se guardarán la palabra encontrada y su puntuación.
+ *
+ * Esta función devuelve un 1 o un 0 dependiendo de si ha encontrado una palabra o no (podemos hacer
+ * que si encuentra varias, devuelva otro número, eso cambiaría el tipo de argumento de salida de
+ * bool a int). Además de eso, cuando encuentre una palabra hará un push_back paralelo al vector
+ * foundWords y foundScore donde se guardarán la palabra encontrada y su puntuación.
+*/
 bool findWordsPlease(string word) {
 	for (size_t ii = 0; ii <= word.length(); ii++) {	// empezando desde 0 hasta <= wordlength se puede no hacer el for de arriba
 		string left = "";
@@ -63,6 +67,63 @@ bool findWordsPlease(string word) {
 	return 1; // ?
 }
 
+
+void findWord(int posx, int posy, string word)
+{
+	vector<char> children = trie->getChildren(word);
+	vector<char> possibleValues;
+	int possiblePositions[2][8];
+	bool neighbors[3][3];
+
+	visited[posx][posy] = true;			//REMEMBER CHECK ALREADY VISITED CELLS!!!
+	for(int a = 0; a < 3; a++){
+		for(int b = 0; b < 3; b++){
+			neighbors[a][b] = true;
+		}
+	}
+	neighbors[1][1] = false;	// own position of our word
+
+	if (posx == 0) neighbors[0][1] = false;
+	else if (posx == DIM - 1) neighbors[2][1] = false;
+	if (posy == 0) neighbors[1][0] = false;
+	else if (posy == DIM - 1) neighbors[1][2] = false;
+	neighbors [0][0] = neighbors[0][1] && neighbors[1][0];
+	neighbors [0][2] = neighbors[0][1] && neighbors[1][2];
+	neighbors [2][0] = neighbors[1][0] && neighbors[2][1];
+	neighbors [2][2] = neighbors[2][1] && neighbors[1][2];
+
+	for(int a = 0; a < 3; a++){
+		for(int b = 0; b < 3; b++){
+			if(visited[posx - 1 + a][posy - 1 + b]) neighbors[a][b] = false;
+		}	
+	}
+
+	for(int i1 = 0; i1 < 3; i1++){
+		for(int i2 = 0; i2 < 3; i2++){
+			if(neighbors[i1][i2]){
+				possibleValues.push_back(board[posx-1+i1][posy-1+i2]);
+				possiblePositions[0][possibleValues.size()-1] = posx-1+i1;
+				possiblePositions[1][possibleValues.size()-1] = posy-1+i2;
+			}
+		}
+	}
+
+	for(unsigned int i1 = 0; i1<possibleValues.size(); i1++){
+		string auxword = word;
+		if(find(children.begin(), children.end(), possibleValues[i1]) != children.end()){		// uno de los puntos alrededor de nuestro punto existe en el trie
+			auxword += possibleValues[i1];
+			int consult = trie->consultTrie(auxword);
+			if(consult != 1){		// the word finishes here or exists and continues
+				foundWords.push_back(auxword);
+			} 
+			if(consult != 2){	// the word doesn't end here and continues
+				findWord(possiblePositions[0][i1],possiblePositions[1][i1],auxword);
+			}
+		}
+	}
+}
+
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	const auto start = clock();
@@ -78,28 +139,29 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	
 	/* Charge the letters into the board */
-	for(unsigned int ii = 0; ii < 4; ii++){
-		for(unsigned int jj = 0; jj < 4; jj++){
-			board[ii][jj] = boardstring[4*ii + jj];
+	for(unsigned int ii = 0; ii < DIM; ii++){
+		for(unsigned int jj = 0; jj < DIM; jj++){
+			board[ii][jj] = boardstring[DIM*ii + jj];
+			visited[ii][jj] = false;
 		}
 	}
 
-	//prueba a ver si detecta que vamos bien
-	string word = "hell";
-	//cout << trie->consultTrie(word) << endl;
+	/*for(int ii = 0; ii < DIM; ii++){
+		for(int jj = 0; jj < DIM; jj++){
+			string word(1,board[ii][jj]);
+			findWord(ii,jj, word);
+		}
+	}*/
 
-	// prueba de checkear 2 nodos por debajo
-	string prueba = "abg";
-	trie->checkSecondNode(prueba);
-
+	string word(1,board[0][0]);
+	findWord(0,0, word);
 	// ANE ESTA EN MODO DE PRUEBA ASI QUE EL INPUT ES input2.txt PORQUE SI NO ME MUERO 
 	// SI VAS A HACER ALGO CON input1.txt CAMBIALO SIN PROBLEMAS PERO AVISAAAAAAAAAAAA
 	
-	//bool a = findWordsPlease("hell");
-	for (int i = 0; i<foundWords.size(); i++){
+	for (unsigned int i = 0; i<foundWords.size(); i++){
 		cout << foundWords[i] << endl;
 	}
+
 	cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl; // tiempo en cargar el diccionario: 120ms
-	delete trie;
 	return 0;
 }

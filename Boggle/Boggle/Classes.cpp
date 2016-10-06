@@ -31,6 +31,7 @@ void Trie::addWord(string s)
 			Node* tmp = new Node();
 			tmp->setContent(s[i]);
 			current->appendChild(tmp);
+			//tmp->setEndNode();
 			current = tmp;
     }
     if (i == s.length() - 1) current->setWordMarker();
@@ -57,16 +58,37 @@ int Trie::consultTrie(string s)
 			}
 			return 2;
 		}
-    else
-      return 1;
+    else return 1;
   }
+	return 0;
 }
 
-bool Trie::checkSecondNode(string s){
+vector<char> Trie::getChildren(string s)
+{
+	vector<char> kids;
+	Node* current = root;
+	int cont = 0;
+  for (unsigned int i = 0; i < s.length(); i++) {
+    Node* tmp = current->findChild(s[i]);
+		if(tmp == NULL){
+			kids.push_back('\0');
+			return kids;
+		}
+    current = tmp;
+  }
+	vector<Node*> childNodes = current->children();
+	for(unsigned int i = 0; i<childNodes.size(); i++){
+		kids.push_back(childNodes[i]->content());
+	}
+	return kids;
+}
+
+bool Trie::check2ndGen(string s, char sn)
+{
 	string root_ = "";
 	Node* current = root;
-	int cont = -1;
-	while(cont < s.length() - 1){
+	unsigned int cont = 0;
+	while(cont < s.length()){
 		root_ += s[cont];
 		Node* tmp = current->findChild(s[cont]);
 		current = tmp;
@@ -76,8 +98,8 @@ bool Trie::checkSecondNode(string s){
 	for(unsigned int i = 0; i<FirstNodes.size(); i++){
 		vector<Node*> SecondNodes = FirstNodes[i]->children();
 		for(unsigned int j = 0; j<SecondNodes.size(); j++){
-			if(SecondNodes[j]->content() == s[s.length() - 1]){		// if second node of our known letter from the string == our last letter
-				string newstring = root_ + FirstNodes[i]->content() + s[s.length() - 1];
+			if(SecondNodes[j]->content() == sn){		// if second node of our known letter from the string == our char
+				string newstring = root_ + FirstNodes[i]->content() + sn;
 				cout << newstring << endl;
 			}
 		}
