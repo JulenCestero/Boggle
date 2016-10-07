@@ -123,7 +123,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	while(!cin.eof()){
 		getline (cin,line);
 		if(line.size() > 2 && line.size() < DIM*DIM - 1) trie->addWord(line);
-	} // tiempo en cargar el diccionario: 0.194s
+	} // tiempo en cargar el diccionario: 0.185s
 
 	/* Charge the letters into the board */
 	for(unsigned int ii = 0; ii < DIM; ii++){
