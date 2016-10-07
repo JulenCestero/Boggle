@@ -11,7 +11,7 @@ char board[DIM][DIM];
 bool visited[DIM][DIM];
 vector<string> foundWords;
 vector<unsigned int> foundScore;
-string maxScoreWord;
+vector<string> maxScoreWords;
 unsigned int maxScore = 0;
 
 /*
@@ -95,9 +95,9 @@ void findWord(int posx, int posy, string word)
 					foundWords.push_back(auxword);
 					unsigned int score = calcPoints(auxword);
 					foundScore.push_back(score);
-					if(score > maxScore){
+					if(score >= maxScore && !(find(maxScoreWords.begin(), maxScoreWords.end(), auxword) != maxScoreWords.end())){
 						maxScore = score;
-						maxScoreWord = auxword;
+						maxScoreWords.push_back(auxword);
 					}
 			} 
 			if(consult != 2){	// the word doesn't end here and continues
@@ -139,15 +139,16 @@ int _tmain(int argc, _TCHAR* argv[])
 			string boardLetter(1,board[ii][jj]);
 			findWord(ii,jj, boardLetter);
 		}
-	}	//tiempo en encontrar palabras: 0.004s
+	}	//tiempo en encontrar palabras: 0.01s
 
-	cout << maxScoreWord << " with " << maxScore << " points" << endl;
-
-	/*cout << foundWords[maxpos] << endl;
-	for (unsigned int i = 0; i<foundWords.size(); i++){
-		cout << foundWords[i] << endl;
+	for(int i = 0; i < maxScoreWords.size(); i++){
+		if(calcPoints(maxScoreWords[i]) == maxScore) cout << maxScoreWords[i] << " with " << maxScore << " points" << endl;
 	}
-	cout << foundWords.size() << endl;*/
+
+	/*
+	for (unsigned int i = 0; i<foundWords.size(); i++) cout << foundWords[i] << endl;
+	cout << foundWords.size() << endl;
+	*/
 
 	cout << (clock()-start1)/(float)CLOCKS_PER_SEC << "s" << endl; 
 	return 0;
