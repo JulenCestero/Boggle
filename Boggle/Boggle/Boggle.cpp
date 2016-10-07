@@ -4,16 +4,15 @@
 #include "Classes.h"
 
 /* GLOBAL VARIABLES */
-
 #define DIM 4
 Trie* trie = new Trie();
 static unsigned int letters[] = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
-vector<string> foundWords;
-vector<unsigned int> foundScore;
 char board[DIM][DIM];
 bool visited[DIM][DIM];
+vector<string> foundWords;
+vector<unsigned int> foundScore;
 string maxScoreWord;
-int maxScore = 0;
+unsigned int maxScore = 0;
 
 /*
  * Function to calculate the points of a word
@@ -79,21 +78,20 @@ void findWord(int posx, int posy, string word)
 
 	for(int a1 = posx - 1; a1 < posx + 2; a1++){
 		for(int a2 = posy - 1; a2 < posy + 2; a2++){
-			if(!visited[a1][a2] && a1>-1 && a2>-1 && a1<DIM && a2<DIM){
+			if(!visited[a1][a2] && a1 >= 0 && a2 >= 0 && a1 < DIM && a2 < DIM){
 				possibleValues.push_back(board[a1][a2]);
-				possiblePositions[0][possibleValues.size()-1] = a1;
-				possiblePositions[1][possibleValues.size()-1] = a2;
+				possiblePositions[0][possibleValues.size() - 1] = a1;
+				possiblePositions[1][possibleValues.size() - 1] = a2;
 			}
 		}
 	}
 
-	for(unsigned int i1 = 0; i1<possibleValues.size(); i1++){
-		string auxword = word;
-		if(find(children.begin(), children.end(), possibleValues[i1]) != children.end()){		// uno de los puntos alrededor de nuestro punto existe en el trie
-			auxword += possibleValues[i1];
+	for(unsigned int ii = 0; ii < possibleValues.size(); ii++){
+		if(find(children.begin(), children.end(), possibleValues[ii]) != children.end()){		// uno de los puntos alrededor de nuestro punto existe en el trie
+			string auxword = word + possibleValues[ii];
 			int consult = trie->consultTrie(auxword);
 			if(consult != 1){		// the word finishes here or exists and continues
-				if(auxword.size() > 2 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end()))
+				if(auxword.size() >= 3 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end()))
 					foundWords.push_back(auxword);
 					unsigned int score = calcPoints(auxword);
 					foundScore.push_back(score);
@@ -103,7 +101,7 @@ void findWord(int posx, int posy, string word)
 					}
 			} 
 			if(consult != 2){	// the word doesn't end here and continues
-				findWord(possiblePositions[0][i1],possiblePositions[1][i1],auxword);
+				findWord(possiblePositions[0][ii],possiblePositions[1][ii],auxword);
 			}
 		}
 	}
@@ -138,8 +136,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	for(int ii = 0; ii < DIM; ii++){
 		for(int jj = 0; jj < DIM; jj++){
-			string word(1,board[ii][jj]);
-			findWord(ii,jj, word);
+			string boardLetter(1,board[ii][jj]);
+			findWord(ii,jj, boardLetter);
 		}
 	}	//tiempo en encontrar palabras: 0.004s
 
