@@ -5,7 +5,7 @@
 
 /* GLOBAL VARIABLES */
 
-#define DIM 2
+#define DIM 4
 Trie* trie = new Trie();
 static unsigned int letters[] = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
 vector<string> foundWords;
@@ -73,37 +73,14 @@ void findWord(int posx, int posy, string word)
 	vector<char> children = trie->getChildren(word);
 	vector<char> possibleValues;
 	int possiblePositions[2][8];
-	bool neighbors[3][3];
+	visited[posx][posy] = true;	
 
-	visited[posx][posy] = true;			//REMEMBER CHECK ALREADY VISITED CELLS!!!
-	for(int a = 0; a < 3; a++){
-		for(int b = 0; b < 3; b++){
-			neighbors[a][b] = true;
-		}
-	}
-	neighbors[1][1] = false;	// own position of our word
-
-	if (posx == 0) neighbors[0][1] = false;
-	else if (posx == DIM - 1) neighbors[2][1] = false;
-	if (posy == 0) neighbors[1][0] = false;
-	else if (posy == DIM - 1) neighbors[1][2] = false;
-	neighbors [0][0] = neighbors[0][1] && neighbors[1][0];
-	neighbors [0][2] = neighbors[0][1] && neighbors[1][2];
-	neighbors [2][0] = neighbors[1][0] && neighbors[2][1];
-	neighbors [2][2] = neighbors[2][1] && neighbors[1][2];
-
-	for(int a = 0; a < 3; a++){
-		for(int b = 0; b < 3; b++){
-			if(visited[posx - 1 + a][posy - 1 + b]) neighbors[a][b] = false;
-		}	
-	}
-
-	for(int i1 = 0; i1 < 3; i1++){
-		for(int i2 = 0; i2 < 3; i2++){
-			if(neighbors[i1][i2]){
-				possibleValues.push_back(board[posx-1+i1][posy-1+i2]);
-				possiblePositions[0][possibleValues.size()-1] = posx-1+i1;
-				possiblePositions[1][possibleValues.size()-1] = posy-1+i2;
+	for(int a1 = posx - 1; a1 < posx + 2; a1++){
+		for(int a2 = posy - 1; a2 < posy + 2; a2++){
+			if(!visited[a1][a2] && a1>-1 && a2>-1 && a1<DIM && a2<DIM){
+				possibleValues.push_back(board[a1][a2]);
+				possiblePositions[0][possibleValues.size()-1] = a1;
+				possiblePositions[1][possibleValues.size()-1] = a2;
 			}
 		}
 	}
@@ -114,13 +91,15 @@ void findWord(int posx, int posy, string word)
 			auxword += possibleValues[i1];
 			int consult = trie->consultTrie(auxword);
 			if(consult != 1){		// the word finishes here or exists and continues
-				foundWords.push_back(auxword);
+				if(auxword.size() > 2 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end()))
+					foundWords.push_back(auxword);
 			} 
 			if(consult != 2){	// the word doesn't end here and continues
 				findWord(possiblePositions[0][i1],possiblePositions[1][i1],auxword);
 			}
 		}
 	}
+	visited[posx][posy] = false;
 }
 
 
@@ -146,21 +125,17 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 	}
 
-	/*for(int ii = 0; ii < DIM; ii++){
+	for(int ii = 0; ii < DIM; ii++){
 		for(int jj = 0; jj < DIM; jj++){
 			string word(1,board[ii][jj]);
 			findWord(ii,jj, word);
 		}
-	}*/
+	}
 
-	string word(1,board[0][0]);
-	findWord(0,0, word);
-	// ANE ESTA EN MODO DE PRUEBA ASI QUE EL INPUT ES input2.txt PORQUE SI NO ME MUERO 
-	// SI VAS A HACER ALGO CON input1.txt CAMBIALO SIN PROBLEMAS PERO AVISAAAAAAAAAAAA
-	
 	for (unsigned int i = 0; i<foundWords.size(); i++){
 		cout << foundWords[i] << endl;
 	}
+	cout << foundWords.size() << endl;
 
 	cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl; // tiempo en cargar el diccionario: 120ms
 	return 0;
