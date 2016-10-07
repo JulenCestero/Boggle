@@ -12,6 +12,8 @@ vector<string> foundWords;
 vector<unsigned int> foundScore;
 char board[DIM][DIM];
 bool visited[DIM][DIM];
+string maxScoreWord;
+int maxScore = 0;
 
 /*
  * Function to calculate the points of a word
@@ -64,7 +66,7 @@ bool findWordsPlease(string word) {
 			}
 		}
 	}
-	return 1; // ?
+	return 1;
 }
 
 
@@ -93,6 +95,12 @@ void findWord(int posx, int posy, string word)
 			if(consult != 1){		// the word finishes here or exists and continues
 				if(auxword.size() > 2 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end()))
 					foundWords.push_back(auxword);
+					unsigned int score = calcPoints(auxword);
+					foundScore.push_back(score);
+					if(score > maxScore){
+						maxScore = score;
+						maxScoreWord = auxword;
+					}
 			} 
 			if(consult != 2){	// the word doesn't end here and continues
 				findWord(possiblePositions[0][i1],possiblePositions[1][i1],auxword);
@@ -115,28 +123,34 @@ int _tmain(int argc, _TCHAR* argv[])
 	while(!cin.eof()){
 		getline (cin,line);
 		trie->addWord(line);
-	}
-	
+	} // tiempo en cargar el diccionario: 0.194s
+
 	/* Charge the letters into the board */
 	for(unsigned int ii = 0; ii < DIM; ii++){
 		for(unsigned int jj = 0; jj < DIM; jj++){
 			board[ii][jj] = boardstring[DIM*ii + jj];
 			visited[ii][jj] = false;
 		}
-	}
+	} 
+
+	const auto start1 = clock();
+	cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl;
 
 	for(int ii = 0; ii < DIM; ii++){
 		for(int jj = 0; jj < DIM; jj++){
 			string word(1,board[ii][jj]);
 			findWord(ii,jj, word);
 		}
-	}
+	}	//tiempo en encontrar palabras: 0.004s
 
+	cout << maxScoreWord << " with " << maxScore << " points" << endl;
+
+	/*cout << foundWords[maxpos] << endl;
 	for (unsigned int i = 0; i<foundWords.size(); i++){
 		cout << foundWords[i] << endl;
 	}
-	cout << foundWords.size() << endl;
+	cout << foundWords.size() << endl;*/
 
-	cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl; // tiempo en cargar el diccionario: 120ms
+	cout << (clock()-start1)/(float)CLOCKS_PER_SEC << "s" << endl; 
 	return 0;
 }
