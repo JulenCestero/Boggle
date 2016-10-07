@@ -120,13 +120,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	getline (cin,hash);
 	while(!cin.eof()){
 		getline (cin,line);
-		if(line.size() > 2 && line.size() < DIM*DIM - 1) trie->addWord(line);
+		if(line.size() > 2 && line.size() < DIM * DIM - 1) trie->addWord(line);
 	} // tiempo en cargar el diccionario: 0.185s
 
 	/* Charge the letters into the board */
 	for(unsigned int ii = 0; ii < DIM; ii++){
 		for(unsigned int jj = 0; jj < DIM; jj++){
-			board[ii][jj] = boardstring[DIM*ii + jj];
+			board[ii][jj] = boardstring[DIM * ii + jj];
 			visited[ii][jj] = false;
 		}
 	} 
