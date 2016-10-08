@@ -120,8 +120,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	getline (cin,hash);
 	while(!cin.eof()){
 		getline (cin,line);
-		if(line.size() > 2 && line.size() < DIM * DIM - 1) trie->addWord(line);
-	} // tiempo en cargar el diccionario: 0.185s
+		if(line.size() > 2 && line.size() < DIM * DIM + 1) trie->addWord(line);
+	} 
 
 	/* Charge the letters into the board */
 	for(unsigned int ii = 0; ii < DIM; ii++){
@@ -139,11 +139,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			string boardLetter(1,board[ii][jj]);
 			findWord(ii,jj, boardLetter);
 		}
-	}	//tiempo en encontrar palabras: 0.01s
+	}	
 
-	for(int i = 0; i < maxScoreWords.size(); i++){
-		if(calcPoints(maxScoreWords[i]) == maxScore) cout << maxScoreWords[i] << " with " << maxScore << " points" << endl;
-	}
+	for(int i = 0; i < maxScoreWords.size(); i++) if(calcPoints(maxScoreWords[i]) == maxScore) cout << maxScoreWords[i] << " with " << maxScore << " points" << endl;
 
 	/*
 	for (unsigned int i = 0; i<foundWords.size(); i++) cout << foundWords[i] << endl;
