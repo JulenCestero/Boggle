@@ -72,21 +72,21 @@ bool findWordsPlease(string word) {
 void findWord(int posx, int posy, string word)
 {
 	vector<char> children = trie->getChildren(word);
-	vector<char> possibleValues;
-	int possiblePositions[2][8];
+	int possiblePositions[2][8], possiblesize = 0;
+	char possibleValues[8];
 	visited[posx][posy] = true;	
 
 	for(int a1 = posx - 1; a1 < posx + 2; a1++){
 		for(int a2 = posy - 1; a2 < posy + 2; a2++){
 			if(!visited[a1][a2] && a1 >= 0 && a2 >= 0 && a1 < DIM && a2 < DIM){
-				possibleValues.push_back(board[a1][a2]);
-				possiblePositions[0][possibleValues.size() - 1] = a1;
-				possiblePositions[1][possibleValues.size() - 1] = a2;
+				possibleValues[possiblesize] = board[a1][a2];
+				possiblePositions[0][++possiblesize - 1] = a1;
+				possiblePositions[1][possiblesize - 1] = a2;
 			}
 		}
 	}
 
-	for(unsigned int ii = 0; ii < possibleValues.size(); ii++){
+	for(unsigned int ii = 0; ii < possiblesize; ii++){
 		if(find(children.begin(), children.end(), possibleValues[ii]) != children.end()){		// uno de los puntos alrededor de nuestro punto existe en el trie
 			string auxword = word + possibleValues[ii];
 			int consult = trie->consultTrie(auxword);
@@ -140,6 +140,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			findWord(ii,jj, boardLetter);
 		}
 	}	
+	cout << (clock()-start1)/(float)CLOCKS_PER_SEC << "s" << endl; 
 
 	for(int i = 0; i < maxScoreWords.size(); i++) if(calcPoints(maxScoreWords[i]) == maxScore) cout << maxScoreWords[i] << " with " << maxScore << " points" << endl;
 
@@ -147,7 +148,5 @@ int _tmain(int argc, _TCHAR* argv[])
 	for (unsigned int i = 0; i<foundWords.size(); i++) cout << foundWords[i] << endl;
 	cout << foundWords.size() << endl;
 	*/
-
-	cout << (clock()-start1)/(float)CLOCKS_PER_SEC << "s" << endl; 
 	return 0;
 }
