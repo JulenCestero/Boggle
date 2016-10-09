@@ -18,5 +18,5 @@
 #include <cstdio>
 using namespace std;
 
-
+#define DIM 4
 // TODO: mencionar aquí los encabezados adicionales que el programa necesita

@@ -4,7 +4,6 @@
 #include "Classes.h"
 
 /* GLOBAL VARIABLES */
-#define DIM 4
 Trie* trie = new Trie();
 static unsigned int letters[] = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
 char board[DIM][DIM];
@@ -72,56 +71,59 @@ bool findWordsPlease(string word) {
 void findWord(int posx, int posy, string word)
 {
 	vector<char> children = trie->getChildren(word);
-	int possiblePositions[2][8], possiblesize = 0;
-	char possibleValues[8];
-	visited[posx][posy] = true;	
+	if(children.size() != 0){
+		if(children[0] != '\0'){
+			unsigned int possiblePositions[2][8], possiblesize = 0;
+			char possibleValues[8];
+			visited[posx][posy] = true;	
 
-	for(int a1 = posx - 1; a1 < posx + 2; a1++){
-		for(int a2 = posy - 1; a2 < posy + 2; a2++){
-			if(!visited[a1][a2] && a1 >= 0 && a2 >= 0 && a1 < DIM && a2 < DIM){
-				possibleValues[possiblesize] = board[a1][a2];
-				possiblePositions[0][++possiblesize - 1] = a1;
-				possiblePositions[1][possiblesize - 1] = a2;
-			}
-		}
-	}
-
-	for(unsigned int ii = 0; ii < possiblesize; ii++){
-		if(find(children.begin(), children.end(), possibleValues[ii]) != children.end()){		// uno de los puntos alrededor de nuestro punto existe en el trie
-			string auxword = word + possibleValues[ii];
-			int consult = trie->consultTrie(auxword);
-			if(consult != 1){		// the word finishes here or exists and continues
-				if(auxword.size() >= 3 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end()))
-					foundWords.push_back(auxword);
-					unsigned int score = calcPoints(auxword);
-					foundScore.push_back(score);
-					if(score >= maxScore && !(find(maxScoreWords.begin(), maxScoreWords.end(), auxword) != maxScoreWords.end())){
-						maxScore = score;
-						maxScoreWords.push_back(auxword);
+			for(int a1 = posx - 1; a1 < posx + 2; a1++){
+				for(int a2 = posy - 1; a2 < posy + 2; a2++){
+					if(!visited[a1][a2] && 0 <= a1 < DIM && 0 <= a2 < DIM){
+						possibleValues[possiblesize] = board[a1][a2];
+						possiblePositions[0][++possiblesize - 1] = a1;
+						possiblePositions[1][possiblesize - 1] = a2;
 					}
-			} 
-			if(consult != 2){	// the word doesn't end here and continues
-				findWord(possiblePositions[0][ii],possiblePositions[1][ii],auxword);
+				}
 			}
+
+			for(unsigned int ii = 0; ii < possiblesize; ii++){
+				if(find(children.begin(), children.end(), possibleValues[ii]) != children.end()){		// uno de los puntos alrededor de nuestro punto existe en el trie
+					string auxword = word + possibleValues[ii];
+					int consult = trie->consultTrie(auxword);
+					if(consult != 1){		// the word finishes here or exists and continues
+						if(auxword.size() >= 3 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end()))
+							foundWords.push_back(auxword);
+							unsigned int score = calcPoints(auxword);
+							foundScore.push_back(score);
+							if(score >= maxScore && !(find(maxScoreWords.begin(), maxScoreWords.end(), auxword) != maxScoreWords.end())){
+								maxScore = score;
+								maxScoreWords.push_back(auxword);
+							}
+					} 
+					if(consult != 2){	// the word doesn't end here and continues
+						findWord(possiblePositions[0][ii],possiblePositions[1][ii],auxword);
+					}
+				}
+			}
+			visited[posx][posy] = false;
 		}
 	}
-	visited[posx][posy] = false;
 }
 
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	const auto start = clock();
 	/* INITIALIZATION OF VARIABLES */
+	const auto start = clock();
 	string boardstring, hash, line;
-
-	/* Charge Trie, hash and auxiliar variable for board */
 	getline (cin,boardstring);
 	getline (cin,hash);
-	while(!cin.eof()){
-		getline (cin,line);
-		if(line.size() > 2 && line.size() < DIM * DIM + 1) trie->addWord(line);
-	} 
+	/* Charge Trie, hash and auxiliar variable for board */
+
+	trie->addDictionary();
+
+	cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl;
 
 	/* Charge the letters into the board */
 	for(unsigned int ii = 0; ii < DIM; ii++){
@@ -132,17 +134,19 @@ int _tmain(int argc, _TCHAR* argv[])
 	} 
 
 	const auto start1 = clock();
-	cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl;
 
 	for(int ii = 0; ii < DIM; ii++){
 		for(int jj = 0; jj < DIM; jj++){
 			string boardLetter(1,board[ii][jj]);
 			findWord(ii,jj, boardLetter);
 		}
-	}	
+	}
+
 	cout << (clock()-start1)/(float)CLOCKS_PER_SEC << "s" << endl; 
 
-	for(int i = 0; i < maxScoreWords.size(); i++) if(calcPoints(maxScoreWords[i]) == maxScore) cout << maxScoreWords[i] << " with " << maxScore << " points" << endl;
+	for(unsigned int i = 0; i < maxScoreWords.size(); i++) 
+		if(calcPoints(maxScoreWords[i]) == maxScore) 
+			cout << maxScoreWords[i] << " with " << maxScore << " points" << endl;
 
 	/*
 	for (unsigned int i = 0; i<foundWords.size(); i++) cout << foundWords[i] << endl;

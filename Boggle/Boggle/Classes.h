@@ -2,36 +2,41 @@
 
 class Node {
 public:
-    Node() { mContent = ' '; mMarker = false; }
-    ~Node() {}
-    char content() {return mContent;}
-    void setContent(char c) {mContent = c;}
-    bool wordMarker() {return mMarker;}
-		//bool NodeEnd() {return endNode;}
-    void setWordMarker() {mMarker = true;}
-		//void setEndNode() {endNode = true;}
+    Node() {mContent = ' '; mMarker = false;}
+    ~Node(){;}
+
+		void setContent(char c) {mContent = c;}
+		void setMarker(bool m) {mMarker = m;}
+		void setChildren(vector<Node*> kids){mChildren = kids;}
+		void setParent(Node* par){parent = par;}
+
+		char content() {return mContent;}
+		bool wordMarker() {return mMarker;}
+
     Node* findChild(char c);
-    void appendChild(Node* child) {
-			mChildren.push_back(child); 
-			//endNode = false;
-		}
+    void appendChild(Node* child) {mChildren.push_back(child);}
+		void appendParent(Node* par);
+		Node* getParent();
     vector<Node*> children() {return mChildren;}
 
 private:
     char mContent;
     bool mMarker;
-		//bool endNode;
-    vector<Node*> mChildren;
+		vector<Node*> mChildren;
+		Node* parent;
 };
 
 class Trie {
 public:
-    Trie();
-    ~Trie();
-    void addWord(string s);
+		Trie();
+		~Trie(){;}
+		void addDictionary();
+    string addWord(string s);
     int consultTrie(string s);
-		bool check2ndGen(string s, char sn);
 		vector<char> getChildren(string s);
+		bool check2ndGen(string s, char sn);
 private:
     Node* root;
+		Node* maxCommonNode;
+		int maxCommonChars;
 };

@@ -10,32 +10,100 @@ Node* Node::findChild(char c)
     return NULL;
 }
 
+void Node::appendParent(Node* par)
+{
+	parent = new Node();
+	parent = par;
+}
+
+Node* Node::getParent()
+{
+	return parent;
+}
+
 Trie::Trie()
 {
-   root = new Node();
+	root = new Node(); 
+	maxCommonNode = root;
+	maxCommonChars = 0;
 }
 
-Trie::~Trie()
+void Trie::addDictionary()
 {
-   // Free memory
+	string line, nextline;
+	getline(cin,line);
+	while(1){
+		if(line.size() <= 2 || line.size() > DIM * DIM + 1){
+			getline(cin,line);
+			continue;
+		}
+		nextline = addWord(line);
+		if(nextline != "") line = nextline;
+		else break;
+	} 
 }
 
-void Trie::addWord(string s)
+string Trie::addWord(string line)
 {
-  Node* current = root;
-  for(unsigned int i = 0; i < s.length(); i++){        
-    Node* child = current->findChild(s[i]);
-    if (child != NULL){
-      current = child;
-    }else{
-			Node* tmp = new Node();
-			tmp->setContent(s[i]);
-			current->appendChild(tmp);
-			//tmp->setEndNode();
-			current = tmp;
-    }
-    if (i == s.length() - 1) current->setWordMarker();
-  }
+	if(!cin.eof()){
+		string nextline;
+		int cont = 0, initialpos = maxCommonChars;
+		Node* current = maxCommonNode;
+		getline(cin, nextline);
+
+		maxCommonNode = root;
+		maxCommonChars = 0;
+		while(1){
+			if(line[cont] != nextline[cont]){
+				maxCommonChars = cont;
+				break;
+			}
+			cont++;
+		}
+		if(nextline.length()/2 < maxCommonChars && maxCommonChars < initialpos){	
+			Node* aux = new Node();
+			aux = current;
+			for(int i = 0; i < initialpos - maxCommonChars; i++){
+				if(aux == root) break;
+				maxCommonNode = aux->getParent();
+				aux = maxCommonNode;
+			}
+		}
+		else{
+			maxCommonNode = root;
+			maxCommonChars = 0;
+		}
+		for(unsigned int i = initialpos; i < line.length(); i++){ 
+			Node* child = current->findChild(line[i]);
+			if(child != NULL) current = child; 
+			else{
+				Node* tmp = new Node();
+				tmp->setContent(line[i]);
+				current->appendChild(tmp);
+				tmp->appendParent(current);
+				current = tmp;
+			}
+			if(i + 1 == maxCommonChars) maxCommonNode = current;
+		}
+		current->setMarker(true);
+		return nextline;
+	}
+	else{
+		Node* current = root;		
+		for(unsigned int i = maxCommonChars - 1; i < line.length(); i++){ 
+			Node* child = current->findChild(line[i]);
+			if(child != NULL) current = child; 
+			else{
+				Node* tmp = new Node();
+				tmp->setContent(line[i]);
+				current->appendChild(tmp);
+				tmp->appendParent(current);
+				current = tmp;
+			}
+		}
+		current->setMarker(true);
+		return "";
+	} 
 }
 
 

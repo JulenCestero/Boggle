@@ -125,7 +125,7 @@ int main(int argc, char* argv[]){
             visited[i][j] = true;
                     
             if (checkBoard(in, 0, i, j, len)){
-              cout << in << endl;
+              //cout << in << endl;
 							cont++;
               break;
             }
