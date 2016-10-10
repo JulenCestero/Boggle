@@ -148,10 +148,10 @@ int Trie::consultTrie(string s)
 				if(current->findChild(alphabet[i]) != NULL){ 
 					// our string exists and it's a word, but there are longer words
 					return 3;
-				}
+				}			//optimizar con get children!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			}
 			return 2;
-		}
+		} 
     else return 1;
   }
 	return 0;

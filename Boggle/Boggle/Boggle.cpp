@@ -71,7 +71,7 @@ bool findWordsPlease(string word) {
 void findWord(int posx, int posy, string word)
 {
 	vector<char> children = trie->getChildren(word);
-	if(children.size() != 0){
+	if(!children.empty()){
 		if(children[0] != '\0'){
 			unsigned int possiblePositions[2][8], possiblesize = 0;
 			char possibleValues[8];
@@ -89,17 +89,17 @@ void findWord(int posx, int posy, string word)
 
 			for(unsigned int ii = 0; ii < possiblesize; ii++){
 				if(find(children.begin(), children.end(), possibleValues[ii]) != children.end()){		// uno de los puntos alrededor de nuestro punto existe en el trie
-					string auxword = word + possibleValues[ii];
+					string auxword(word + possibleValues[ii]);
 					int consult = trie->consultTrie(auxword);
 					if(consult != 1){		// the word finishes here or exists and continues
-						if(auxword.size() >= 3 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end()))
-							foundWords.push_back(auxword);
-							unsigned int score = calcPoints(auxword);
-							foundScore.push_back(score);
+						if(auxword.size() >= 3 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end())){
+							unsigned short int score = calcPoints(auxword);
 							if(score >= maxScore && !(find(maxScoreWords.begin(), maxScoreWords.end(), auxword) != maxScoreWords.end())){
 								maxScore = score;
-								maxScoreWords.push_back(auxword);
-							}
+								maxScoreWords.push_back(auxword);		//OPTIMIZABLE ??!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+							}		
+						}// Propongo borrar todas las palabras con puntuación menor a la nueva maxScore.
+						// GUARDAR PALABRA AUNQUE SEA 3??????????????????????????????????????????????????????
 					} 
 					if(consult != 2){	// the word doesn't end here and continues
 						findWord(possiblePositions[0][ii],possiblePositions[1][ii],auxword);
@@ -141,7 +141,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			findWord(ii,jj, boardLetter);
 		}
 	}
-
+	delete trie;
 	cout << (clock()-start1)/(float)CLOCKS_PER_SEC << "s" << endl; 
 
 	for(unsigned int i = 0; i < maxScoreWords.size(); i++) 
