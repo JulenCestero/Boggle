@@ -31,7 +31,8 @@ public:
 		Trie();
 		~Trie(){;}
 		void addDictionary();
-    string addWord(string s);
+    //string addWord(string s);
+		void addWord(string s);
     int consultTrie(string s);
 		vector<char> getChildren(string s);
 		bool check2ndGen(string s, char sn);

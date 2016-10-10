@@ -28,7 +28,7 @@ Trie::Trie()
 	maxCommonChars = 0;
 }
 
-void Trie::addDictionary()
+/*void Trie::addDictionary()
 {
 	string line, nextline;
 	getline(cin,line);
@@ -41,8 +41,34 @@ void Trie::addDictionary()
 		if(nextline != "") line = nextline;
 		else break;
 	} 
+}*/
+
+void Trie::addDictionary()
+{
+	string line;
+	while(!cin.eof()){
+		getline(cin,line);
+		if(line.size() >= 3 && line.size() <= DIM*DIM + 1) addWord(line);
+	}
 }
 
+void Trie::addWord(string s)
+{
+  Node* current = root;
+  for (int i = 0; i < s.length(); i++){        
+    Node* child = current->findChild(s[i]);
+    if (child != NULL) current = child;
+    else{
+      Node* tmp = new Node();
+      tmp->setContent(s[i]);
+      current->appendChild(tmp);
+      current = tmp;
+    }
+    if(i == s.length() - 1) current->setMarker(true);
+}
+}
+
+/*
 string Trie::addWord(string line)
 {
 	if(!cin.eof()){
@@ -104,7 +130,7 @@ string Trie::addWord(string line)
 		current->setMarker(true);
 		return "";
 	} 
-}
+}*/
 
 
 int Trie::consultTrie(string s)
