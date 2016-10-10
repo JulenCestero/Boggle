@@ -10,7 +10,7 @@ char board[DIM][DIM];
 bool visited[DIM][DIM];
 vector<string> foundWords;
 vector<unsigned int> foundScore;
-vector<string> maxScoreWords;
+vector<vector<string>> maxScoreWords;
 unsigned int maxScore = 0;
 
 /*
@@ -94,9 +94,13 @@ void findWord(int posx, int posy, string word)
 					if(consult != 1){		// the word finishes here or exists and continues
 						if(auxword.size() >= 3 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end())){
 							unsigned short int score = calcPoints(auxword);
-							if(score >= maxScore && !(find(maxScoreWords.begin(), maxScoreWords.end(), auxword) != maxScoreWords.end())){
+							if (score > maxScore) {
 								maxScore = score;
-								maxScoreWords.push_back(auxword);		//OPTIMIZABLE ??!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+								maxScoreWords.push_back(vector<string>(NULL));
+								maxScoreWords.back().push_back(auxword);
+							}
+							else if(score == maxScore && !(find(maxScoreWords.back().begin(), maxScoreWords.back().end(), auxword) != maxScoreWords.back().end())){
+								maxScoreWords.back().push_back(auxword);		//OPTIMIZABLE ??!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 							}		
 						}// Propongo borrar todas las palabras con puntuación menor a la nueva maxScore.
 						// GUARDAR PALABRA AUNQUE SEA 3??????????????????????????????????????????????????????
@@ -144,9 +148,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	delete trie;
 	cout << (clock()-start1)/(float)CLOCKS_PER_SEC << "s" << endl; 
 
-	for(unsigned int i = 0; i < maxScoreWords.size(); i++) 
-		if(calcPoints(maxScoreWords[i]) == maxScore) 
-			cout << maxScoreWords[i] << " with " << maxScore << " points" << endl;
+	for(unsigned int i = 0; i < maxScoreWords.back().size(); i++) 
+			cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
 
 	/*
 	for (unsigned int i = 0; i<foundWords.size(); i++) cout << foundWords[i] << endl;
