@@ -136,25 +136,17 @@ string Trie::addWord(string line)
 int Trie::consultTrie(string s)
 {
   Node* current = root;
-  while (current != NULL){
-    for (unsigned int i = 0; i < s.length(); i++) {
-      Node* tmp = current->findChild(s[i]);
-      if (tmp == NULL) return 0;
-      current = tmp;
-    }
-    if (current->wordMarker()){
-			string alphabet = "abcdefghijklmnopqrstuvwxyz";
-			for(unsigned int i = 0; i < 26; i++){
-				if(current->findChild(alphabet[i]) != NULL){ 
-					// our string exists and it's a word, but there are longer words
-					return 3;
-				}			//optimizar con get children!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			}
-			return 2;
-		} 
-    else return 1;
+	Node* tmp;
+  for(unsigned int i = 0; i < s.length(); i++){
+    tmp = current->findChild(s[i]);
+    current = tmp;
   }
-	return 0;
+  if(current->wordMarker()){
+		vector<Node*> children = current->children();
+		if(children.size() != 0) return 3;
+		else return 2;
+	} 
+  else return 1;
 }
 
 vector<char> Trie::getChildren(string s)
@@ -164,10 +156,7 @@ vector<char> Trie::getChildren(string s)
 	int cont = 0;
   for (unsigned int i = 0; i < s.length(); i++) {
     Node* tmp = current->findChild(s[i]);
-		if(tmp == NULL){
-			kids.push_back('\0');
-			return kids;
-		}
+		if(tmp == NULL) return kids;
     current = tmp;
   }
 	vector<Node*> childNodes = current->children();

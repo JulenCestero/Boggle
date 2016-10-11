@@ -72,46 +72,38 @@ void findWord(int posx, int posy, string word)
 {
 	vector<char> children = trie->getChildren(word);
 	if(!children.empty()){
-		if(children[0] != '\0'){
-			unsigned int possiblePositions[2][8], possiblesize = 0;
-			char possibleValues[8];
-			visited[posx][posy] = true;	
+		unsigned int possiblePositions[2][8], possiblesize = 0;
+		char possibleValues[8];
+		visited[posx][posy] = true;	
 
-			for(int a1 = posx - 1; a1 < posx + 2; a1++){
-				for(int a2 = posy - 1; a2 < posy + 2; a2++){
-					if(!visited[a1][a2] && 0 <= a1 < DIM && 0 <= a2 < DIM){
-						possibleValues[possiblesize] = board[a1][a2];
-						possiblePositions[0][++possiblesize - 1] = a1;
-						possiblePositions[1][possiblesize - 1] = a2;
-					}
+		for(int a1 = posx - 1; a1 < posx + 2; a1++){
+			for(int a2 = posy - 1; a2 < posy + 2; a2++){
+				if(!visited[a1][a2] && 0 <= a1 < DIM && 0 <= a2 < DIM){
+					possibleValues[possiblesize] = board[a1][a2];
+					possiblePositions[0][++possiblesize - 1] = a1;
+					possiblePositions[1][possiblesize - 1] = a2;
 				}
 			}
-
-			for(unsigned int ii = 0; ii < possiblesize; ii++){
-				if(find(children.begin(), children.end(), possibleValues[ii]) != children.end()){		// uno de los puntos alrededor de nuestro punto existe en el trie
-					string auxword(word + possibleValues[ii]);
-					int consult = trie->consultTrie(auxword);
-					if(consult != 1){		// the word finishes here or exists and continues
-						if(auxword.size() >= 3 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end())){
-							unsigned short int score = calcPoints(auxword);
-							if (score > maxScore) {
-								maxScore = score;
-								maxScoreWords.push_back(vector<string>(NULL));
-								maxScoreWords.back().push_back(auxword);
-							}
-							else if(score == maxScore && !(find(maxScoreWords.back().begin(), maxScoreWords.back().end(), auxword) != maxScoreWords.back().end())){
-								maxScoreWords.back().push_back(auxword);		//OPTIMIZABLE ??!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-							}		
-						}// Propongo borrar todas las palabras con puntuación menor a la nueva maxScore.
-						// GUARDAR PALABRA AUNQUE SEA 3??????????????????????????????????????????????????????
-					} 
-					if(consult != 2){	// the word doesn't end here and continues
-						findWord(possiblePositions[0][ii],possiblePositions[1][ii],auxword);
-					}
-				}
-			}
-			visited[posx][posy] = false;
 		}
+
+		for(unsigned int ii = 0; ii < possiblesize; ii++){
+			if(find(children.begin(), children.end(), possibleValues[ii]) != children.end()){
+				string auxword(word + possibleValues[ii]);
+				int consult = trie->consultTrie(auxword);
+				if(consult == 2){		// the word finishes here
+					if(auxword.size() >= 3 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end())){
+						unsigned short int score = calcPoints(auxword);
+						if(score > maxScore){
+							maxScore = score;
+							maxScoreWords.push_back(vector<string>(NULL));
+							maxScoreWords.back().push_back(auxword);
+						}
+					}
+				} 
+				else findWord(possiblePositions[0][ii],possiblePositions[1][ii],auxword);		//recursive
+			}
+		}
+		visited[posx][posy] = false;
 	}
 }
 
@@ -149,7 +141,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << (clock()-start1)/(float)CLOCKS_PER_SEC << "s" << endl; 
 
 	for(unsigned int i = 0; i < maxScoreWords.back().size(); i++) 
-			cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
+		cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
 
 	/*
 	for (unsigned int i = 0; i<foundWords.size(); i++) cout << foundWords[i] << endl;
