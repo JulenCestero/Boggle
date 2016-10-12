@@ -47,16 +47,16 @@ unsigned int calcPoints(const string word)
  * foundWords y foundScore donde se guardarán la palabra encontrada y su puntuación.
 */
 bool findWordsPlease(string word) {
-	for (size_t ii = 0; ii <= word.length(); ii++) {	// empezando desde 0 hasta <= wordlength se puede no hacer el for de arriba
+	for(size_t ii = 0; ii <= word.length(); ii++) {	// empezando desde 0 hasta <= wordlength se puede no hacer el for de arriba
 		string left = "";
 		string right = "";
-		for (size_t jj = 0; jj < ii; jj++) { //optimizable?
+		for(size_t jj = 0; jj < ii; jj++) { //optimizable?
 			left += word[jj];
 		}
-		for (size_t kk = ii; kk < word.length(); kk++) { //optimizable?
+		for(size_t kk = ii; kk < word.length(); kk++) { //optimizable?
 			right += word[kk];
 		}
-		for (unsigned int jj = 97; jj <= 122; jj++) {
+		for(size_t jj = 97; jj <= 122; jj++) {
 			string newWord = left + char(jj) + right;
 			if (trie->consultTrie(newWord) == 2) {
 				foundWords.push_back(newWord);
@@ -72,7 +72,7 @@ void findWord(int posx, int posy, string word)
 {
 	vector<char> children = trie->getChildren(word);
 	if(!children.empty()){
-		unsigned int possiblePositions[2][8], possiblesize = 0;
+		size_t possiblePositions[2][8], possiblesize = 0;
 		char possibleValues[8];
 		visited[posx][posy] = true;	
 
@@ -86,18 +86,16 @@ void findWord(int posx, int posy, string word)
 			}
 		}
 
-		for(unsigned int ii = 0; ii < possiblesize; ii++){
+		for(size_t ii = 0; ii < possiblesize; ii++){
 			if(find(children.begin(), children.end(), possibleValues[ii]) != children.end()){
 				string auxword(word + possibleValues[ii]);
-				int consult = trie->consultTrie(auxword);
-				if(consult == 2){		// the word finishes here
-					if(auxword.size() >= 3 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end())){
-						unsigned short int score = calcPoints(auxword);
-						if(score > maxScore){
-							maxScore = score;
-							maxScoreWords.push_back(vector<string>(NULL));
-							maxScoreWords.back().push_back(auxword);
-						}
+				size_t consult = trie->consultTrie(auxword);
+				if(consult == 2 && auxword.size() >= 3 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end())){
+					size_t score = calcPoints(auxword);
+					if(score > maxScore){
+						maxScore = score;
+						maxScoreWords.push_back(vector<string>(NULL));
+						maxScoreWords.back().push_back(auxword);
 					}
 				} 
 				else findWord(possiblePositions[0][ii],possiblePositions[1][ii],auxword);		//recursive
@@ -122,8 +120,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl;
 
 	/* Charge the letters into the board */
-	for(unsigned int ii = 0; ii < DIM; ii++){
-		for(unsigned int jj = 0; jj < DIM; jj++){
+	for(size_t ii = 0; ii < DIM; ii++){
+		for(size_t jj = 0; jj < DIM; jj++){
 			board[ii][jj] = boardstring[DIM * ii + jj];
 			visited[ii][jj] = false;
 		}
@@ -131,8 +129,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	const auto start1 = clock();
 
-	for(int ii = 0; ii < DIM; ii++){
-		for(int jj = 0; jj < DIM; jj++){
+	for(size_t ii = 0; ii < DIM; ii++){
+		for(size_t jj = 0; jj < DIM; jj++){
 			string boardLetter(1,board[ii][jj]);
 			findWord(ii,jj, boardLetter);
 		}
@@ -140,7 +138,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	delete trie;
 	cout << (clock()-start1)/(float)CLOCKS_PER_SEC << "s" << endl; 
 
-	for(unsigned int i = 0; i < maxScoreWords.back().size(); i++) 
+	for(size_t i = 0; i < maxScoreWords.back().size(); i++) 
 		cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
 
 	/*

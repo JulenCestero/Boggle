@@ -3,9 +3,9 @@
 
 Node* Node::findChild(char c)
 {
-    for (unsigned int i = 0; i < mChildren.size(); i++){
+    for(size_t i = 0; i < mChildren.size(); i++){
 			Node* tmp = mChildren.at(i);
-			if (tmp->content() == c) return tmp;
+			if(tmp->content() == c) return tmp;
     }
     return NULL;
 }
@@ -55,9 +55,9 @@ void Trie::addDictionary()
 void Trie::addWord(string s)
 {
   Node* current = root;
-  for (int i = 0; i < s.length(); i++){        
+  for(size_t i = 0; i < s.length(); i++){        
     Node* child = current->findChild(s[i]);
-    if (child != NULL) current = child;
+    if(child != NULL) current = child;
     else{
       Node* tmp = new Node();
       tmp->setContent(s[i]);
@@ -153,14 +153,12 @@ vector<char> Trie::getChildren(string s)
 {
 	vector<char> kids;
 	Node* current = root;
-	int cont = 0;
-  for (unsigned int i = 0; i < s.length(); i++) {
+  for(size_t i = 0; i < s.length(); i++) {
     Node* tmp = current->findChild(s[i]);
-		if(tmp == NULL) return kids;
     current = tmp;
   }
 	vector<Node*> childNodes = current->children();
-	for(unsigned int i = 0; i<childNodes.size(); i++){
+	for(size_t i = 0; i < childNodes.size(); i++){
 		kids.push_back(childNodes[i]->content());
 	}
 	return kids;
@@ -178,9 +176,9 @@ bool Trie::check2ndGen(string s, char sn)
 		cont++;
 	}	// si tenemos string "helo", avanzamos en nodos hasta llegar al nodo "l". ahora miramos si la "o" esta 2 nodos por debajo
 	vector<Node*> FirstNodes = current->children();
-	for(unsigned int i = 0; i<FirstNodes.size(); i++){
+	for(size_t i = 0; i < FirstNodes.size(); i++){
 		vector<Node*> SecondNodes = FirstNodes[i]->children();
-		for(unsigned int j = 0; j<SecondNodes.size(); j++){
+		for(size_t j = 0; j < SecondNodes.size(); j++){
 			if(SecondNodes[j]->content() == sn){		// if second node of our known letter from the string == our char
 				string newstring = root_ + FirstNodes[i]->content() + sn;
 				cout << newstring << endl;
