@@ -16,17 +16,18 @@ vector<string> mixedWords;
 
 void mixWords(string word)
 {
-  long tmp = pow(2, word.length());
-  for(long ii = 0; ii < tmp; ii++){
-    string aux = word;
-    string binary = bitset<64>(ii).to_string();
-    //cout << binary<< endl;
+	string binary, aux;
+  for(size_t ii = 0; ii < pow(2, word.length()); ii++){
+    aux = word;
+    binary = bitset<DIM*DIM+1>(ii).to_string();
+
     for(size_t jj = 0; jj < word.length(); jj++){
       if(binary[64 - jj] == '1'){
         aux[jj] = word[word.length() - jj] - 32;
       }
     }
-          mixedWords.push_back(aux);
+     //mixedWords.push_back(aux);		// hace falta realmente guardar todos los valores?
+		 // aquí iría el hash
   }
 }
 
@@ -63,7 +64,8 @@ int calcPoints(const string word)
  * bool a int). Además de eso, cuando encuentre una palabra hará un push_back paralelo al vector
  * foundWords y foundScore donde se guardarán la palabra encontrada y su puntuación.
 */
-bool findWordsPlease(string word) {
+bool findWordsPlease(string word) 
+{
 	for(size_t ii = 0; ii <= word.length(); ii++) {	// empezando desde 0 hasta <= wordlength se puede no hacer el for de arriba
 		string left = "";
 		string right = "";
@@ -154,7 +156,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
   
 
-  	const auto start = clock();
+  const auto start = clock();
   mixWords("aaaaaaaaaaaaaaaaa");
 	/*
 	for (unsigned int i = 0; i<foundWords.size(); i++) cout << foundWords[i] << endl;
@@ -162,6 +164,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	*/
 	delete trie;
 
-  	cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl;
+  cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl;
 	return 0;
 }
