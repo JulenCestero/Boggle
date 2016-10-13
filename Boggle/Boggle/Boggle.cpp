@@ -16,13 +16,20 @@ vector<string> mixedWords;
 
 void mixWords(string word)
 {
-	string binary, aux;
-  for(size_t ii = 0; ii < pow(2, word.length()); ii++){
+	string bin, aux;
+	int len = word.length(), max = pow(2, len);
+	/*bin = bitset<DIM*DIM+1>(max).to_string();
+	for(int i = 0; i<DIM*DIM+1; i++){
+		if(bin[i] == '0'){
+			const int bits = len - (i + 1);
+		}
+	}*/
+  for(size_t ii = 0; ii < max; ii++){
     aux = word;
-    binary = bitset<DIM*DIM+1>(ii).to_string();
+    bin = bitset<DIM*DIM+1>(ii).to_string();
 
-    for(size_t jj = 0; jj < word.length(); jj++){
-      if(binary[64 - jj] == '1'){
+    for(size_t jj = 0; jj < word.length(); jj++){		//optimizable con find y subtract/erase ???????????????????????????????????
+      if(bin[64 - jj] == '1'){
         aux[jj] = word[word.length() - jj] - 32;
       }
     }
@@ -128,15 +135,13 @@ void findWord(int posx, int posy, string word)
 int _tmain(int argc, _TCHAR* argv[])
 {
 	/* INITIALIZATION OF VARIABLES */
-
+	const auto start = clock();
 	string boardstring, hash, line;
 	getline (cin,boardstring);
 	getline (cin,hash);
 	/* Charge Trie, hash and auxiliar variable for board */
 
 	trie->addDictionary();
-
-
 
 	/* Charge the letters into the board */
 	for(int ii = 0; ii < DIM; ii++){
@@ -155,8 +160,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	for(size_t i = 0; i < maxScoreWords.back().size(); i++) 
 		cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
   
-
-  const auto start = clock();
   mixWords("aaaaaaaaaaaaaaaaa");
 	/*
 	for (unsigned int i = 0; i<foundWords.size(); i++) cout << foundWords[i] << endl;
