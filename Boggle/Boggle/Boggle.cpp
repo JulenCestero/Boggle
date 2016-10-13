@@ -12,14 +12,31 @@ vector<string> foundWords;
 vector<unsigned int> foundScore;
 vector<vector<string>> maxScoreWords;
 unsigned int maxScore = 0;
+vector<string> mixedWords;
+
+void mixWords(string word)
+{
+  long tmp = pow(2, word.length());
+  for(long ii = 0; ii < tmp; ii++){
+    string aux = word;
+    string binary = bitset<64>(ii).to_string();
+    //cout << binary<< endl;
+    for(size_t jj = 0; jj < word.length(); jj++){
+      if(binary[64 - jj] == '1'){
+        aux[jj] = word[word.length() - jj] - 32;
+      }
+    }
+          mixedWords.push_back(aux);
+  }
+}
 
 /*
  * Function to calculate the points of a word
  */
-unsigned int calcPoints(const string word)
+int calcPoints(const string word)
 {
-	unsigned int totalPoints = 0;
-	unsigned int differentWords = 0;
+	int totalPoints = 0;
+	int differentWords = 0;
 	// Puntos por letra
 	for (size_t ii = 0; ii < word.length(); ii++) {
 		totalPoints += letters[word[ii] - 97];
@@ -56,7 +73,7 @@ bool findWordsPlease(string word) {
 		for(size_t kk = ii; kk < word.length(); kk++) { //optimizable?
 			right += word[kk];
 		}
-		for(size_t jj = 97; jj <= 122; jj++) {
+		for(int jj = 97; jj <= 122; jj++) {
 			string newWord = left + char(jj) + right;
 			if (trie->consultTrie(newWord) == 2) {
 				foundWords.push_back(newWord);
@@ -72,13 +89,13 @@ void findWord(int posx, int posy, string word)
 {
 	vector<char> children = trie->getChildren(word);
 	if(!children.empty()){
-		size_t possiblePositions[2][8], possiblesize = 0;
+		int possiblePositions[2][8], possiblesize = 0;
 		char possibleValues[8];
 		visited[posx][posy] = true;	
 
 		for(int a1 = posx - 1; a1 < posx + 2; a1++){
 			for(int a2 = posy - 1; a2 < posy + 2; a2++){
-				if(!visited[a1][a2] && 0 <= a1 < DIM && 0 <= a2 < DIM){
+				if(!visited[a1][a2]){
 					possibleValues[possiblesize] = board[a1][a2];
 					possiblePositions[0][++possiblesize - 1] = a1;
 					possiblePositions[1][possiblesize - 1] = a2;
@@ -86,12 +103,12 @@ void findWord(int posx, int posy, string word)
 			}
 		}
 
-		for(size_t ii = 0; ii < possiblesize; ii++){
+		for(int ii = 0; ii < possiblesize; ii++){
 			if(find(children.begin(), children.end(), possibleValues[ii]) != children.end()){
 				string auxword(word + possibleValues[ii]);
-				size_t consult = trie->consultTrie(auxword);
+				int consult = trie->consultTrie(auxword);
 				if(consult == 2 && auxword.size() >= 3 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end())){
-					size_t score = calcPoints(auxword);
+					int score = calcPoints(auxword);
 					if(score > maxScore){
 						maxScore = score;
 						maxScoreWords.push_back(vector<string>(NULL));
@@ -109,7 +126,7 @@ void findWord(int posx, int posy, string word)
 int _tmain(int argc, _TCHAR* argv[])
 {
 	/* INITIALIZATION OF VARIABLES */
-	const auto start = clock();
+
 	string boardstring, hash, line;
 	getline (cin,boardstring);
 	getline (cin,hash);
@@ -117,33 +134,34 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	trie->addDictionary();
 
-	cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl;
+
 
 	/* Charge the letters into the board */
-	for(size_t ii = 0; ii < DIM; ii++){
-		for(size_t jj = 0; jj < DIM; jj++){
+	for(int ii = 0; ii < DIM; ii++){
+		for(int jj = 0; jj < DIM; jj++){
 			board[ii][jj] = boardstring[DIM * ii + jj];
 			visited[ii][jj] = false;
 		}
 	} 
-
-	const auto start1 = clock();
-
-	for(size_t ii = 0; ii < DIM; ii++){
-		for(size_t jj = 0; jj < DIM; jj++){
+	for(int ii = 0; ii < DIM; ii++){
+		for(int jj = 0; jj < DIM; jj++){
 			string boardLetter(1,board[ii][jj]);
 			findWord(ii,jj, boardLetter);
 		}
 	}
-	delete trie;
-	cout << (clock()-start1)/(float)CLOCKS_PER_SEC << "s" << endl; 
 
 	for(size_t i = 0; i < maxScoreWords.back().size(); i++) 
 		cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
+  
 
+  	const auto start = clock();
+  mixWords("aaaaaaaaaaaaaaaaa");
 	/*
 	for (unsigned int i = 0; i<foundWords.size(); i++) cout << foundWords[i] << endl;
 	cout << foundWords.size() << endl;
 	*/
+	delete trie;
+
+  	cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl;
 	return 0;
 }

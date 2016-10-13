@@ -136,7 +136,7 @@ string Trie::addWord(string line)
 int Trie::consultTrie(string s)
 {
   Node* current = root;
-	Node* tmp;
+  Node* tmp;
   for(unsigned int i = 0; i < s.length(); i++){
     tmp = current->findChild(s[i]);
     current = tmp;
@@ -151,14 +151,14 @@ int Trie::consultTrie(string s)
 
 vector<char> Trie::getChildren(string s)
 {
-	vector<char> kids;
-	Node* current = root;
+  vector<char> kids;
+  Node* current = root;
   for(size_t i = 0; i < s.length(); i++) {
     Node* tmp = current->findChild(s[i]);
     current = tmp;
   }
-	vector<Node*> childNodes = current->children();
-	for(size_t i = 0; i < childNodes.size(); i++){
+  vector<Node*> childNodes = current->children();
+  for(size_t i = 0; i < childNodes.size(); i++){
 		kids.push_back(childNodes[i]->content());
 	}
 	return kids;

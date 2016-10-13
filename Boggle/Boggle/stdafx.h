@@ -16,6 +16,8 @@
 #include <ctime>
 #include <algorithm>
 #include <cstdio>
+#include <bitset>
+#include <math.h>
 using namespace std;
 
 #define DIM 4
