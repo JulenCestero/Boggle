@@ -24,8 +24,8 @@ Node* Node::getParent()
 Trie::Trie()
 {
 	root = new Node(); 
-	maxCommonNode = root;
-	maxCommonChars = 0;
+	//maxCommonNode = root;
+	//maxCommonChars = 0;
 }
 
 /*void Trie::addDictionary()
@@ -59,13 +59,13 @@ void Trie::addWord(string s)
     Node* child = current->findChild(s[i]);
     if(child != NULL) current = child;
     else{
-      Node* tmp = new Node();
+			Node* tmp = new Node();
       tmp->setContent(s[i]);
       current->appendChild(tmp);
       current = tmp;
     }
-    if(i == s.length() - 1) current->setMarker(true);
-}
+	}
+	current->setMarker(true);
 }
 
 /*
@@ -132,12 +132,11 @@ string Trie::addWord(string line)
 	} 
 }*/
 
-
 int Trie::consultTrie(string s)
 {
   Node* current = root;
   Node* tmp;
-  for(unsigned int i = 0; i < s.length(); i++){
+  for(size_t i = 0; i < s.length(); i++){
     tmp = current->findChild(s[i]);
     current = tmp;
   }
@@ -164,26 +163,21 @@ vector<char> Trie::getChildren(string s)
 	return kids;
 }
 
-bool Trie::check2ndGen(string s, char sn)
+vector<string> Trie::check2ndGen(string s, char sn)
 {
-	string root_ = "";
+	Node* tmp;
 	Node* current = root;
-	unsigned int cont = 0;
-	while(cont < s.length()){
-		root_ += s[cont];
-		Node* tmp = current->findChild(s[cont]);
+	vector<string> incompleteWords;
+	for(size_t ii = 0; ii < s.length(); ii++){
+		tmp = current->findChild(s[ii]);					// se puede poner current = current->findChild(s[ii]);	???????????????????????????
 		current = tmp;
-		cont++;
-	}	// si tenemos string "helo", avanzamos en nodos hasta llegar al nodo "l". ahora miramos si la "o" esta 2 nodos por debajo
-	vector<Node*> FirstNodes = current->children();
-	for(size_t i = 0; i < FirstNodes.size(); i++){
-		vector<Node*> SecondNodes = FirstNodes[i]->children();
-		for(size_t j = 0; j < SecondNodes.size(); j++){
-			if(SecondNodes[j]->content() == sn){		// if second node of our known letter from the string == our char
-				string newstring = root_ + FirstNodes[i]->content() + sn;
-				cout << newstring << endl;
-			}
-		}
 	}
-	return 0;
+	vector<Node*> FirstSons = current->children(), SecondNodes;
+	for(size_t i = 0; i < FirstSons.size(); i++){
+		SecondNodes = FirstSons[i]->children();
+		for(size_t j = 0; j < SecondNodes.size(); j++)
+			if(SecondNodes[j]->content() == sn) 
+				incompleteWords.push_back(s + FirstSons[i]->content() + sn);
+	}
+	return incompleteWords;
 }

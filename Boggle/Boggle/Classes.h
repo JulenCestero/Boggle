@@ -2,8 +2,8 @@
 
 class Node {
 public:
-    Node() {mContent = ' '; mMarker = false;}
-    ~Node(){;}
+  Node() {mContent = ' '; mMarker = false;}
+  ~Node(){;}
 
 	void setContent(char c) {mContent = c;}
 	void setMarker(bool m) {mMarker = m;}
@@ -20,8 +20,8 @@ public:
 	vector<Node*> children() {return mChildren;}
 
 private:
-    char mContent;
-    bool mMarker;
+  char mContent;
+  bool mMarker;
 	vector<Node*> mChildren;	//optimizable, sabemos que como max tamaño = 26
 	Node* parent;
 };
@@ -31,13 +31,13 @@ public:
 	Trie();
 	~Trie(){;}
 	void addDictionary();
-    //string addWord(string s);
+   //string addWord(string s);
 	void addWord(string s);
-    int consultTrie(string s);
+  int consultTrie(string s);
 	vector<char> getChildren(string s);
-	bool check2ndGen(string s, char sn);
+	vector<string> check2ndGen(string s, char sn);
 private:
     Node* root;
-		Node* maxCommonNode;
-		int maxCommonChars;
+		//Node* maxCommonNode;
+		//int maxCommonChars;
 };

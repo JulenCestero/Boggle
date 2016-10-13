@@ -8,16 +8,15 @@ Trie* trie = new Trie();
 static unsigned int letters[] = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
 char board[DIM][DIM];
 bool visited[DIM][DIM];
-vector<string> foundWords;
-vector<unsigned int> foundScore;
-vector<vector<string>> maxScoreWords;
 unsigned int maxScore = 0;
+vector<vector<string>> maxScoreWords;
 vector<string> mixedWords;
 
 void mixWords(string word)
 {
 	string bin, aux;
-	int len = word.length(), max = pow(2, len);
+	double len = word.length();
+	double max = pow(2, len);
 	/*bin = bitset<DIM*DIM+1>(max).to_string();
 	for(int i = 0; i<DIM*DIM+1; i++){
 		if(bin[i] == '0'){
@@ -27,14 +26,12 @@ void mixWords(string word)
   for(size_t ii = 0; ii < max; ii++){
     aux = word;
     bin = bitset<DIM*DIM+1>(ii).to_string();
-
     for(size_t jj = 0; jj < word.length(); jj++){		//optimizable con find y subtract/erase ???????????????????????????????????
       if(bin[64 - jj] == '1'){
         aux[jj] = word[word.length() - jj] - 32;
       }
     }
-     //mixedWords.push_back(aux);		// hace falta realmente guardar todos los valores?
-		 // aquí iría el hash
+		// aquí iría el hash
   }
 }
 
@@ -70,7 +67,7 @@ int calcPoints(const string word)
  * que si encuentra varias, devuelva otro número, eso cambiaría el tipo de argumento de salida de
  * bool a int). Además de eso, cuando encuentre una palabra hará un push_back paralelo al vector
  * foundWords y foundScore donde se guardarán la palabra encontrada y su puntuación.
-*/
+*
 bool findWordsPlease(string word) 
 {
 	for(size_t ii = 0; ii <= word.length(); ii++) {	// empezando desde 0 hasta <= wordlength se puede no hacer el for de arriba
@@ -91,7 +88,7 @@ bool findWordsPlease(string word)
 		}
 	}
 	return 1;
-}
+}*/
 
 
 void findWord(int posx, int posy, string word)
@@ -116,15 +113,15 @@ void findWord(int posx, int posy, string word)
 			if(find(children.begin(), children.end(), possibleValues[ii]) != children.end()){
 				string auxword(word + possibleValues[ii]);
 				int consult = trie->consultTrie(auxword);
-				if(consult == 2 && auxword.size() >= 3 && !(find(foundWords.begin(), foundWords.end(), auxword) != foundWords.end())){
-					int score = calcPoints(auxword);
+				if(consult == 2 && auxword.size() >= 3){
+					unsigned int score = calcPoints(auxword);
 					if(score > maxScore){
 						maxScore = score;
 						maxScoreWords.push_back(vector<string>(NULL));
 						maxScoreWords.back().push_back(auxword);
 					}
 				} 
-				else findWord(possiblePositions[0][ii],possiblePositions[1][ii],auxword);		//recursive
+				else findWord(possiblePositions[0][ii],possiblePositions[1][ii],auxword);
 			}
 		}
 		visited[posx][posy] = false;
@@ -134,13 +131,11 @@ void findWord(int posx, int posy, string word)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	/* INITIALIZATION OF VARIABLES */
+	/* Charge Trie, hash and auxiliar variable for board */
 	const auto start = clock();
 	string boardstring, hash, line;
 	getline (cin,boardstring);
 	getline (cin,hash);
-	/* Charge Trie, hash and auxiliar variable for board */
-
 	trie->addDictionary();
 
 	/* Charge the letters into the board */
@@ -150,6 +145,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			visited[ii][jj] = false;
 		}
 	} 
+	/* Find words in board */
 	for(int ii = 0; ii < DIM; ii++){
 		for(int jj = 0; jj < DIM; jj++){
 			string boardLetter(1,board[ii][jj]);
@@ -160,13 +156,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	for(size_t i = 0; i < maxScoreWords.back().size(); i++) 
 		cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
   
-  mixWords("aaaaaaaaaaaaaaaaa");
-	/*
-	for (unsigned int i = 0; i<foundWords.size(); i++) cout << foundWords[i] << endl;
-	cout << foundWords.size() << endl;
-	*/
-	delete trie;
+  mixWords("grazers");
 
+	delete trie;
   cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl;
 	return 0;
 }
