@@ -128,6 +128,50 @@ void findWord(int posx, int posy, string word)
 	}
 }
 
+void findAllWord(int posx, int posy, string word, bool flag)
+{
+  int possiblePositions[2][8], possiblesize = 0;
+	char possibleValues[8];
+  visited[posx][posy] = true;	
+
+	for(int a1 = posx - 1; a1 < posx + 2; a1++){
+		for(int a2 = posy - 1; a2 < posy + 2; a2++){
+			if(!visited[a1][a2]){
+				possibleValues[possiblesize] = board[a1][a2];
+				possiblePositions[0][++possiblesize - 1] = a1;
+				possiblePositions[1][possiblesize - 1] = a2;
+			}
+		}
+	}
+  if(!flag){ 
+    vector<string> incompleteWords = trie->check2ndGen(word, board[posx][posy]);
+    for(size_t i = 0; i<incompleteWords.size(); i++){
+      
+    }
+
+  }
+	vector<char> children = trie->getChildren(word);
+	if(!children.empty()){
+
+		for(int ii = 0; ii < possiblesize; ii++){
+			if(find(children.begin(), children.end(), possibleValues[ii]) != children.end()){
+				string auxword(word + possibleValues[ii]);
+				int consult = trie->consultTrie(auxword);
+				if(consult == 2 && auxword.size() >= 3){
+					unsigned int score = calcPoints(auxword);
+					if(score > maxScore){
+						maxScore = score;
+						maxScoreWords.push_back(vector<string>(NULL));
+						maxScoreWords.back().push_back(auxword);
+					}
+				} 
+				else findWord(possiblePositions[0][ii],possiblePositions[1][ii],auxword);
+			}
+		}
+		visited[posx][posy] = false;
+	}
+}
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -146,17 +190,23 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 	} 
 	/* Find words in board */
+  vector<string> incompleteWords;
+  incompleteWords = trie->check2ndGen("", board[0][0]);
+  for(int i = 0; i<incompleteWords.size(); i++){
+    findWord(0,0,incompleteWords[i]);
+  }
+  /*
 	for(int ii = 0; ii < DIM; ii++){
 		for(int jj = 0; jj < DIM; jj++){
 			string boardLetter(1,board[ii][jj]);
 			findWord(ii,jj, boardLetter);
 		}
-	}
+	}*/
 
 	for(size_t i = 0; i < maxScoreWords.back().size(); i++) 
 		cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
   
-  mixWords("grazers");
+  //mixWords("grazers");  //DA PROBLEMAS DE OUT OF RANGE
 
 	delete trie;
   cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl;
