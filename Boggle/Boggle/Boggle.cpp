@@ -113,7 +113,7 @@ void findWord(int posx, int posy, string word)
 			if(find(children.begin(), children.end(), possibleValues[ii]) != children.end()){
 				string auxword(word + possibleValues[ii]);
 				int consult = trie->consultTrie(auxword);
-				if(consult == 2 && auxword.size() >= 3){
+				if(consult != 1 && auxword.size() >= 3){
 					unsigned int score = calcPoints(auxword);
 					if(score > maxScore){
 						maxScore = score;
@@ -121,7 +121,7 @@ void findWord(int posx, int posy, string word)
 						maxScoreWords.back().push_back(auxword);
 					}
 				} 
-				else findWord(possiblePositions[0][ii],possiblePositions[1][ii],auxword);
+				if(consult != 2) findWord(possiblePositions[0][ii],possiblePositions[1][ii],auxword);
 			}
 		}
 		visited[posx][posy] = false;
