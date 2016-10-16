@@ -204,6 +204,7 @@ int _tmain(int argc, _TCHAR* argv[])
     cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
 
   mixWords("grazers");  //DA PROBLEMAS DE OUT OF RANGE
+
   // OpenSSL random example (delete for final project!)
   unsigned long long rnd;
   RAND_bytes((unsigned char*)&rnd, sizeof(rnd));
