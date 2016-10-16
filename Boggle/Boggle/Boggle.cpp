@@ -4,11 +4,9 @@
 // Important note: when cleaning the project for final submission delete all the content of
 //                 Debug and Release directories BUT the libeay32MD.dll file.
 
-// Boggle.cpp: define el punto de partida entre el punto de divergencia del 1% y la distopía apocalíptica
-//
 #include "stdafx.h"
 #include "Classes.h"
-//#include </openssl/rand.h> // dummy example to illustrate the use of OpenSSL
+#include <openssl/rand.h> // dummy example to illustrate the use of OpenSSL
 
 /* GLOBAL VARIABLES */
 Trie* trie = new Trie();
@@ -67,37 +65,6 @@ int calcPoints(const string word)
   return totalPoints + differentWords;
 }
 
-/*
-* Function to search all letter combination possible
-*
-* Esta función devuelve un 1 o un 0 dependiendo de si ha encontrado una palabra o no (podemos hacer
-* que si encuentra varias, devuelva otro número, eso cambiaría el tipo de argumento de salida de
-* bool a int). Además de eso, cuando encuentre una palabra hará un push_back paralelo al vector
-* foundWords y foundScore donde se guardarán la palabra encontrada y su puntuación.
-*
-bool findWordsPlease(string word)
-{
-for(size_t ii = 0; ii <= word.length(); ii++) {	// empezando desde 0 hasta <= wordlength se puede no hacer el for de arriba
-string left = "";
-string right = "";
-for(size_t jj = 0; jj < ii; jj++) { //optimizable?
-left += word[jj];
-}
-for(size_t kk = ii; kk < word.length(); kk++) { //optimizable?
-right += word[kk];
-}
-for(int jj = 97; jj <= 122; jj++) {
-string newWord = left + char(jj) + right;
-if (trie->consultTrie(newWord) == 2) {
-foundWords.push_back(newWord);
-foundScore.push_back(calcPoints(newWord));
-}
-}
-}
-return 1;
-}*/
-
-
 void findWord(int posx, int posy, string word)
 {
   vector<char> children = trie->getChildren(word);
@@ -140,7 +107,7 @@ void findWord(int posx, int posy, string word)
 
 void findAllWords(int posx, int posy, string word, bool flag)
 {
-  
+
   int possiblePositions[2][8], possiblesize = 0;
   char possibleValues[8];
   visited[posx][posy] = true;
@@ -237,19 +204,13 @@ int _tmain(int argc, _TCHAR* argv[])
     cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
 
   mixWords("grazers");  //DA PROBLEMAS DE OUT OF RANGE
-
-
-
-
-
   // OpenSSL random example (delete for final project!)
-  //unsigned long long rnd;
-  //RAND_bytes((unsigned char*)&rnd, sizeof(rnd));
-  //cout << rnd << endl;
+  unsigned long long rnd;
+  RAND_bytes((unsigned char*)&rnd, sizeof(rnd));
+  cout << rnd << endl;
   // End of OpenSSL example
 
   cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << endl; // comment out this line for final submission
   delete trie;
-	return 0;
+  return 0;
 }
-
