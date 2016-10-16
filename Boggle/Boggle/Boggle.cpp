@@ -140,9 +140,7 @@ void findWord(int posx, int posy, string word)
 
 void findAllWords(int posx, int posy, string word, bool flag)
 {
-  /*if(word == "unsavor"){
-  cout << "found unsavor!" << endl;
-  }*/
+  
   int possiblePositions[2][8], possiblesize = 0;
   char possibleValues[8];
   visited[posx][posy] = true;
