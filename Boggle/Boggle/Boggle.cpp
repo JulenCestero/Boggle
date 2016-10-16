@@ -151,9 +151,6 @@ void findAllWord(int posx, int posy, string word, bool flag)
       if (!(possiblePositions[0][jj] < 0 || possiblePositions[1][jj] < 0)) {
         vector<string> incompleteWords;
         incompleteWords = trie->check2ndGen(word, board[possiblePositions[0][jj]][possiblePositions[1][jj]]);
-        /*if (incompleteWords.size() > 0) {
-          visited[possiblePositions[0][jj]][possiblePositions[1][jj]] = true;
-        }*/ // REDUNDANTE
         for (size_t i = 0; i < incompleteWords.size(); i++) {
           findAllWord(possiblePositions[0][jj], possiblePositions[1][jj], incompleteWords.at(i), 1);
         }
