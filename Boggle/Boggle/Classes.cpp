@@ -174,10 +174,15 @@ vector<string> Trie::check2ndGen(string s, char sn)
 	}
 	vector<Node*> FirstSons = current->children(), SecondNodes;
 	for(size_t i = 0; i < FirstSons.size(); i++){
-		SecondNodes = FirstSons[i]->children();
-		for(size_t j = 0; j < SecondNodes.size(); j++)
-			if(SecondNodes[j]->content() == sn) 
-				incompleteWords.push_back(s + FirstSons[i]->content() + sn);
+		if(sn != ' '){
+			SecondNodes = FirstSons[i]->children();
+			for(size_t j = 0; j < SecondNodes.size(); j++)
+				if(SecondNodes[j]->content() == sn) 
+					incompleteWords.push_back(s + FirstSons[i]->content() + sn);
+		}
+		else{
+			if(FirstSons[i]->wordMarker()) incompleteWords.push_back(s + FirstSons[i]->content());
+		}
 	}
 	return incompleteWords;
 }
