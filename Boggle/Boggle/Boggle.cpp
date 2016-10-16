@@ -115,11 +115,14 @@ void findWord(int posx, int posy, string word)
 				int consult = trie->consultTrie(auxword);
 				if(consult != 1 && auxword.size() >= 3){
 					unsigned int score = calcPoints(auxword);
-					if(score > maxScore){
+					if(score > maxScore){ // TODO CORREGIR!!
 						maxScore = score;
 						maxScoreWords.push_back(vector<string>(NULL));
 						maxScoreWords.back().push_back(auxword);
 					}
+          else if (score == maxScore) {
+            maxScoreWords.back().push_back(auxword);
+          }
 				} 
 				if(consult != 2) findWord(possiblePositions[0][ii],possiblePositions[1][ii],auxword);
 			}
@@ -204,11 +207,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	}*/
 
 	for(size_t i = 0; i < maxScoreWords.back().size(); i++) 
-		cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
+	cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
   
   //mixWords("grazers");  //DA PROBLEMAS DE OUT OF RANGE
 
-	delete trie;
+  delete trie;
   cout << (clock()-start)/(float)CLOCKS_PER_SEC << "s" << endl;
 	return 0;
 }
