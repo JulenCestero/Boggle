@@ -165,10 +165,17 @@ void findAllWords(int posx, int posy, string word, bool flag)
         int consult = trie->consultTrie(auxword);
         if(consult == 2 && auxword.size() >= 3){
           unsigned int score = calcPoints(auxword);
-          if(score >= maxScore){
-            maxScore = score;
-						if(score > maxScore) maxScoreWords.push_back(vector<string>(NULL));
-            maxScoreWords.back().push_back(auxword);
+          if(score > maxScore){
+            if (find(maxScoreWords.back().begin(), maxScoreWords.back().end(), auxword) == maxScoreWords.back().end()) {
+              maxScore = score;
+              maxScoreWords.push_back(vector<string>(NULL));
+              maxScoreWords.back().push_back(auxword);
+            }
+          }
+          else if (score == maxScore) {
+            if (find(maxScoreWords.back().begin(), maxScoreWords.back().end(), auxword) == maxScoreWords.back().end()) {
+              maxScoreWords.back().push_back(auxword);
+            }
           }
         }
         else findAllWords(possiblePositions[0][ii], possiblePositions[1][ii], auxword, flag);
@@ -178,9 +185,11 @@ void findAllWords(int posx, int posy, string word, bool flag)
 				for(size_t i = 0; i<finalWords.size(); i++){
 					unsigned int score = calcPoints(finalWords[i]);
 					if(finalWords[i].size() >= 3 && score >= maxScore){
-						maxScore = score;
-						if(score > maxScore) maxScoreWords.push_back(vector<string>(NULL));
-						maxScoreWords.back().push_back(finalWords[i]);
+            if (score > maxScore) maxScoreWords.push_back(vector<string>(NULL));
+            if (find(maxScoreWords.back().begin(), maxScoreWords.back().end(), finalWords[i]) == maxScoreWords.back().end()) {
+              maxScore = score;
+              maxScoreWords.back().push_back(finalWords[i]);
+            }
 					}
 				}
 			}
