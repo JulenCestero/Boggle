@@ -146,33 +146,43 @@ void findAllWord(int posx, int posy, string word, bool flag)
 			}
 		}
 	}
-  if(!flag){ 
-    vector<string> incompleteWords = trie->check2ndGen(word, board[posx][posy]);
-    for(size_t i = 0; i<incompleteWords.size(); i++){
-      
+  if (!flag) {
+    for(int jj = 0; jj < possiblesize; jj++){
+      if (!(possiblePositions[0][jj] < 0 || possiblePositions[1][jj] < 0 || possiblePositions[0][jj] == posx || possiblePositions[1][jj] == posy)) {
+        vector<string> incompleteWords;
+        incompleteWords = trie->check2ndGen(word, board[possiblePositions[0][jj]][possiblePositions[1][jj]]);
+        if (incompleteWords.size() > 0) {
+          visited[possiblePositions[0][jj]][possiblePositions[1][jj]] = true;
+        }
+        for (size_t i = 0; i < incompleteWords.size(); i++) {
+          findAllWord(possiblePositions[0][jj], possiblePositions[1][jj], incompleteWords.at(i), 1);
+        }
+      }
     }
-
   }
-	vector<char> children = trie->getChildren(word);
-	if(!children.empty()){
+  vector<char> children = trie->getChildren(word);
+  if (!children.empty()) {
 
-		for(int ii = 0; ii < possiblesize; ii++){
-			if(find(children.begin(), children.end(), possibleValues[ii]) != children.end()){
-				string auxword(word + possibleValues[ii]);
-				int consult = trie->consultTrie(auxword);
-				if(consult == 2 && auxword.size() >= 3){
-					unsigned int score = calcPoints(auxword);
-					if(score > maxScore){
-						maxScore = score;
-						maxScoreWords.push_back(vector<string>(NULL));
-						maxScoreWords.back().push_back(auxword);
-					}
-				} 
-				else findWord(possiblePositions[0][ii],possiblePositions[1][ii],auxword);
-			}
-		}
-		visited[posx][posy] = false;
-	}
+    for (int ii = 0; ii < possiblesize; ii++) {
+      if (find(children.begin(), children.end(), possibleValues[ii]) != children.end()) {
+        string auxword(word + possibleValues[ii]);
+        int consult = trie->consultTrie(auxword);
+        if (consult == 2 && auxword.size() >= 3) {
+          unsigned int score = calcPoints(auxword);
+          if (score > maxScore) {
+            maxScore = score;
+            maxScoreWords.push_back(vector<string>(NULL));
+            maxScoreWords.back().push_back(auxword);
+          }
+          else if (score == maxScore) {
+            maxScoreWords.back().push_back(auxword);
+          }
+        }
+        else findAllWord(possiblePositions[0][ii], possiblePositions[1][ii], auxword, flag);
+      }
+    }
+  }
+  visited[posx][posy] = false;
 }
 
 
@@ -198,13 +208,13 @@ int _tmain(int argc, _TCHAR* argv[])
   for(int i = 0; i<incompleteWords.size(); i++){
     findWord(0,0,incompleteWords[i]);
   }
-  /*
+  
 	for(int ii = 0; ii < DIM; ii++){
 		for(int jj = 0; jj < DIM; jj++){
 			string boardLetter(1,board[ii][jj]);
-			findWord(ii,jj, boardLetter);
+			findAllWord(ii,jj, boardLetter, 0);
 		}
-	}*/
+	}
 
 	for(size_t i = 0; i < maxScoreWords.back().size(); i++) 
 	cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
