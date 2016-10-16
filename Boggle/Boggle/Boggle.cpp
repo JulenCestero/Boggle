@@ -8,7 +8,7 @@
 //
 #include "stdafx.h"
 #include "Classes.h"
-#include </openssl/rand.h> // dummy example to illustrate the use of OpenSSL
+//#include </openssl/rand.h> // dummy example to illustrate the use of OpenSSL
 
 /* GLOBAL VARIABLES */
 Trie* trie = new Trie();
