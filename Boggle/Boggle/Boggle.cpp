@@ -148,12 +148,12 @@ void findAllWord(int posx, int posy, string word, bool flag)
 	}
   if (!flag) {
     for(int jj = 0; jj < possiblesize; jj++){
-      if (!(possiblePositions[0][jj] < 0 || possiblePositions[1][jj] < 0 || possiblePositions[0][jj] == posx || possiblePositions[1][jj] == posy)) {
+      if (!(possiblePositions[0][jj] < 0 || possiblePositions[1][jj] < 0)) {
         vector<string> incompleteWords;
         incompleteWords = trie->check2ndGen(word, board[possiblePositions[0][jj]][possiblePositions[1][jj]]);
-        if (incompleteWords.size() > 0) {
+        /*if (incompleteWords.size() > 0) {
           visited[possiblePositions[0][jj]][possiblePositions[1][jj]] = true;
-        }
+        }*/ // REDUNDANTE
         for (size_t i = 0; i < incompleteWords.size(); i++) {
           findAllWord(possiblePositions[0][jj], possiblePositions[1][jj], incompleteWords.at(i), 1);
         }
@@ -215,7 +215,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			findAllWord(ii,jj, boardLetter, 0);
 		}
 	}
-
+  
+ 
 	for(size_t i = 0; i < maxScoreWords.back().size(); i++) 
 	cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
   
