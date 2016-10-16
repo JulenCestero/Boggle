@@ -245,9 +245,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
   // OpenSSL random example (delete for final project!)
-  unsigned long long rnd;
-  RAND_bytes((unsigned char*)&rnd, sizeof(rnd));
-  cout << rnd << endl;
+  //unsigned long long rnd;
+  //RAND_bytes((unsigned char*)&rnd, sizeof(rnd));
+  //cout << rnd << endl;
   // End of OpenSSL example
 
   cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << endl; // comment out this line for final submission
