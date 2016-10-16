@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2FA07F0A-7A53-4E2B-9221-EDFE3B6BD402}</ProjectGuid>
+    <ProjectGuid>{F11BD43A-2919-417B-AAC9-888196D8EDE9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Boggle</RootNamespace>
   </PropertyGroup>
