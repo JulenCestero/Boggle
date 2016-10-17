@@ -7,7 +7,7 @@
 #include "stdafx.h"
 #include "Classes.h"
 #include <openssl/rand.h> // dummy example to illustrate the use of OpenSSL
-
+#include <openssl/sha.h>
 /* GLOBAL VARIABLES */
 Trie* trie = new Trie();
 static unsigned int letters[] = { 1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10 };
@@ -17,7 +17,22 @@ unsigned int maxScore = 0;
 vector<vector<string>> maxScoreWords;
 vector<string> mixedWords;
 
-void mixWords(string word)
+
+string sha256(const string str)
+{
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    SHA256_CTX sha256;
+    SHA256_Init(&sha256);
+    SHA256_Update(&sha256, str.c_str(), str.size());
+    SHA256_Final(hash, &sha256);
+    stringstream ss;
+    for(int i = 0; i < SHA256_DIGEST_LENGTH; i++)
+    {
+        ss << hex << setw(2) << setfill('0') << (int)hash[i];
+    }
+    return ss.str();
+}
+bool mixWords(string word, string hash)
 {
   string bin, aux;
   double len = word.length();
@@ -31,13 +46,18 @@ void mixWords(string word)
   for (size_t ii = 0; ii < max; ii++) {
     aux = word;
     bin = bitset<DIM*DIM + 1>(ii).to_string();
-    for (size_t jj = 0; jj < word.length(); jj++) {		//optimizable con find y subtract/erase ???????????????????????????????????
-      if (bin[64 - jj] == '1') {
-        aux[jj] = word[word.length() - jj] - 32;
+    for (size_t jj = 0; jj < word.size(); jj++) {		//optimizable con find y subtract/erase ???????????????????????????????????
+      if (bin[DIM*DIM - jj] == '1') {
+        aux[jj] = word[jj] - 32;
       }
     }
-    // aquí iría el hash
+    string auxHash = sha256(aux);
+    if(hash.compare(auxHash) == 0){
+      cout << "ENCONTRADO!!: " << aux << endl;
+      return 1;
+    }
   }
+  return 0;
 }
 
 /*
@@ -54,7 +74,7 @@ int calcPoints(const string word)
   // Puntos por longitud
   totalPoints += word.length() - 2; // Asegurarse de que nunca salga un numero negativo aqui
 
-                                    // Puntos por entropía
+  // Puntos por entropía
   vector<char> aux;
   for (size_t ii = 0; ii < word.length(); ii++) {
     if (find(aux.begin(), aux.end(), word[ii]) == aux.end()) {
@@ -174,7 +194,7 @@ void findAllWords(int posx, int posy, string word, bool flag)
 int _tmain(int argc, _TCHAR* argv[])
 {
   /* Charge Trie, hash and auxiliar variable for board */
-  const auto start = clock();
+  const auto start = clock();  
   string boardstring, hash, line;
   getline(cin, boardstring);
   getline(cin, hash);
@@ -200,16 +220,24 @@ int _tmain(int argc, _TCHAR* argv[])
     }
   }
 
-  for (size_t i = 0; i < maxScoreWords.back().size(); i++)
+  for (size_t i = 0; i < maxScoreWords.back().size(); i++){
     cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
+    if(mixWords(maxScoreWords.back().at(i), hash)){
+      break;
+    }
+  }
+  //mixWords("grazers");  //DA PROBLEMAS DE OUT OF RANGE
+  //auto a = sha256("grazers");
 
-  mixWords("grazers");  //DA PROBLEMAS DE OUT OF RANGE
-
+  /*
   // OpenSSL random example (delete for final project!)
+  
   unsigned long long rnd;
   RAND_bytes((unsigned char*)&rnd, sizeof(rnd));
   cout << rnd << endl;
   // End of OpenSSL example
+  */
+  
 
   cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << endl; // comment out this line for final submission
   delete trie;
