@@ -27,9 +27,7 @@ string sha256(const string str)
     SHA256_Final(hash, &sha256);
     stringstream ss;
     for(int i = 0; i < SHA256_DIGEST_LENGTH; i++)
-    {
-        ss << hex << setw(2) << setfill('0') << (int)hash[i];
-    }
+			ss << hex << setw(2) << setfill('0') << (int)hash[i];
     return ss.str();
 }
 bool mixWords(string word, string hash)
@@ -237,7 +235,9 @@ int _tmain(int argc, _TCHAR* argv[])
   cout << rnd << endl;
   // End of OpenSSL example
   */
-  
+
+	cout << "our hash is: " << hash << endl;
+	cout << "the hash of GraZerS: " << sha256("GraZerS") << endl;
 
   cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << endl; // comment out this line for final submission
   delete trie;
