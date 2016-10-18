@@ -6,8 +6,7 @@
 
 #include "stdafx.h"
 #include "Classes.h"
-#include <openssl/rand.h> // dummy example to illustrate the use of OpenSSL
-#include <openssl/sha.h>
+
 /* GLOBAL VARIABLES */
 Trie* trie = new Trie();
 static unsigned int letters[] = { 1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10 };
@@ -20,30 +19,23 @@ vector<string> mixedWords;
 
 string sha256(const string str)
 {
-    unsigned char hash[SHA256_DIGEST_LENGTH];
-    SHA256_CTX sha256;
-    SHA256_Init(&sha256);
-    SHA256_Update(&sha256, str.c_str(), str.size());
-    SHA256_Final(hash, &sha256);
-    stringstream ss;
-    for(int i = 0; i < SHA256_DIGEST_LENGTH; i++)
-			ss << hex << setw(2) << setfill('0') << (int)hash[i];
-    return ss.str();
+	unsigned char hash[SHA256_DIGEST_LENGTH];
+	SHA256_CTX sha256;
+	SHA256_Init(&sha256);
+	SHA256_Update(&sha256, str.c_str(), str.size());
+	SHA256_Final(hash, &sha256);
+	stringstream ss;
+	for(int i = 0; i < SHA256_DIGEST_LENGTH; i++)
+		ss << hex << setw(2) << setfill('0') << (int)hash[i];
+	return ss.str();
 }
+
 bool mixWords(string word, string hash)
 {
   string bin, aux;
-  double len = word.length();
-  double max = pow(2, len);
-  /*bin = bitset<DIM*DIM+1>(max).to_string();
-  for(int i = 0; i<DIM*DIM+1; i++){
-  if(bin[i] == '0'){
-  const int bits = len - (i + 1);
-  }
-  }*/
-  for (size_t ii = 0; ii < max; ii++) {
+  for (size_t ii = 0; ii < pow(2, word.length()); ii++) {
     aux = word;
-    bin = bitset<DIM*DIM + 1>(ii).to_string();
+    bin = bitset<DIM*DIM+1>(ii).to_string();
     for (size_t jj = 0; jj < word.size(); jj++) {		//optimizable con find y subtract/erase ???????????????????????????????????
       if (bin[DIM*DIM - jj] == '1') {
         aux[jj] = word[jj] - 32;
@@ -63,19 +55,19 @@ bool mixWords(string word, string hash)
 */
 int calcPoints(const string word)
 {
-  int totalPoints = 0;
-  int differentWords = 0;
+  int totalPoints = 0, differentWords = 0;
+
   // Puntos por letra
-  for (size_t ii = 0; ii < word.length(); ii++) {
+  for(size_t ii = 0; ii < word.length(); ii++)
     totalPoints += letters[word[ii] - 97];
-  }
+
   // Puntos por longitud
-  totalPoints += word.length() - 2; // Asegurarse de que nunca salga un numero negativo aqui
+  totalPoints += word.length() - 2; 
 
   // Puntos por entropía
   vector<char> aux;
-  for (size_t ii = 0; ii < word.length(); ii++) {
-    if (find(aux.begin(), aux.end(), word[ii]) == aux.end()) {
+  for(size_t ii = 0; ii < word.length(); ii++){
+    if(find(aux.begin(), aux.end(), word[ii]) == aux.end()){
       aux.push_back(word[ii]);
       differentWords++;
     }
@@ -86,7 +78,7 @@ int calcPoints(const string word)
 void findWord(int posx, int posy, string word)
 {
   vector<char> children = trie->getChildren(word);
-  if (!children.empty()) {
+  if(!children.empty()){
     int possiblePositions[2][8], possiblesize = 0;
     char possibleValues[8];
     visited[posx][posy] = true;
@@ -107,13 +99,12 @@ void findWord(int posx, int posy, string word)
         int consult = trie->consultTrie(auxword);
         if(consult != 1 && auxword.size() >= 3){
           unsigned int score = calcPoints(auxword);
-          if(score > maxScore) { // TODO CORREGIR!!
-            maxScore = score;
-            maxScoreWords.push_back(vector<string>(NULL));
-            maxScoreWords.back().push_back(auxword);
-          }
-          else if(score == maxScore){
-            maxScoreWords.back().push_back(auxword);
+          if(score > maxScore){
+            if(find(maxScoreWords.back().begin(), maxScoreWords.back().end(), auxword) == maxScoreWords.back().end()){
+              maxScore = score;
+              maxScoreWords.push_back(vector<string>(NULL));
+              maxScoreWords.back().push_back(auxword);
+            }
           }
         }
         if(consult != 2) findWord(possiblePositions[0][ii], possiblePositions[1][ii], auxword);
@@ -125,7 +116,6 @@ void findWord(int posx, int posy, string word)
 
 void findAllWords(int posx, int posy, string word, bool flag)
 {
-
   int possiblePositions[2][8], possiblesize = 0;
   char possibleValues[8];
   visited[posx][posy] = true;
@@ -193,7 +183,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
   /* Charge Trie, hash and auxiliar variable for board */
   const auto start = clock();  
-  string boardstring, hash, line;
+  string boardstring, hash;
   getline(cin, boardstring);
   getline(cin, hash);
   trie->addDictionary();
@@ -205,6 +195,7 @@ int _tmain(int argc, _TCHAR* argv[])
       visited[ii][jj] = false;
     }
   }
+
   /* Find words in board */
   vector<string> incompleteWords;
   for(int ii = 0; ii < DIM; ii++){
@@ -221,22 +212,11 @@ int _tmain(int argc, _TCHAR* argv[])
     cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
     if(mixWords(maxScoreWords.back().at(i), hash)) break;
   }
-  //mixWords("grazers");  //DA PROBLEMAS DE OUT OF RANGE
-  //auto a = sha256("grazers");
-
-  /*
-  // OpenSSL random example (delete for final project!)
-  
-  unsigned long long rnd;
-  RAND_bytes((unsigned char*)&rnd, sizeof(rnd));
-  cout << rnd << endl;
-  // End of OpenSSL example
-  */
 
 	cout << "our hash is: " << hash << endl;
 	cout << "the hash of GraZerS: " << sha256("GraZerS") << endl;
 
-  cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << endl; // comment out this line for final submission
+  cout << (clock()-start)/(float)(CLOCKS_PER_SEC) << endl; // comment out this line for final submission
   delete trie;
   return 0;
 }
