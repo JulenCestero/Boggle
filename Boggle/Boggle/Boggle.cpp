@@ -1,5 +1,5 @@
 // +
-// Network Security 2016 - Project template
+// Network Security 2016 - Boggle
 
 // Important note: when cleaning the project for final submission delete all the content of
 //                 Debug and Release directories BUT the libeay32MD.dll file.
@@ -36,33 +36,28 @@ bool mixWords(string word, string hash)
   for (size_t ii = 0; ii < pow(2, word.length()); ii++) {
     aux = word;
     bin = bitset<DIM*DIM+1>(ii).to_string();
-    for (size_t jj = 0; jj < word.size(); jj++) {		//optimizable con find y subtract/erase ???????????????????????????????????
-      if (bin[DIM*DIM - jj] == '1') {
+    for(size_t jj = 0; jj < word.size(); jj++)
+      if(bin[DIM*DIM - jj] == '1')
         aux[jj] = word[jj] - 32;
-      }
-    }
     string auxHash = sha256(aux);
     if(hash.compare(auxHash) == 0){
-      cout << "ENCONTRADO!!: " << aux << endl;
+      cout << aux << endl;
       return 1;
     }
   }
   return 0;
 }
 
-/*
-* Function to calculate the points of a word
-*/
-int calcPoints(const string word)
+void points(const string word)
 {
-  int totalPoints = 0, differentWords = 0;
+  unsigned int letterPoints = 0, differentWords = 0, score;
 
   // Puntos por letra
   for(size_t ii = 0; ii < word.length(); ii++)
-    totalPoints += letters[word[ii] - 97];
+    letterPoints += letters[word[ii] - 97];
 
   // Puntos por longitud
-  totalPoints += word.length() - 2; 
+  letterPoints += word.length() - 2; 
 
   // Puntos por entropía
   vector<char> aux;
@@ -72,58 +67,40 @@ int calcPoints(const string word)
       differentWords++;
     }
   }
-  return totalPoints + differentWords;
+  score = letterPoints + differentWords;
+	if(score > maxScore){
+		maxScore = score;
+		maxScoreWords.push_back(vector<string>(NULL));
+		maxScoreWords.back().push_back(word);
+	}
+	else if(score == maxScore){ 
+		if(find(maxScoreWords.back().begin(), maxScoreWords.back().end(), word) == maxScoreWords.back().end()){
+			maxScoreWords.back().push_back(word);
+		}
+	}
 }
 
 void findAllWords(int posx, int posy, string word, bool flag)
 {
   vector<char> children = trie->getChildren(word);
-	vector<string> incompleteWords;
-	unsigned int score, consult;
   if(!children.empty()){
     visited[posx][posy] = true;
     for(int a1 = posx - 1; a1 < posx + 2; a1++){
       for(int a2 = posy - 1; a2 < posy + 2; a2++){
         if(!visited[a1][a2] && a1 >= 0 && a1<DIM && a2 >= 0 && a2<DIM){
-					if(!flag){
-						incompleteWords = trie->check2ndGen(word, board[a1][a2]);
-						for(size_t i = 0; i < incompleteWords.size(); i++){
-							findAllWords(a1, a2, incompleteWords.at(i), 1);
-						}
-					}
 					if(find(children.begin(), children.end(), board[a1][a2]) != children.end()){
 						string auxword(word + board[a1][a2]);
-						consult = trie->consultTrie(auxword);
-						if(consult != 1 && auxword.size() >= 3){
-							score = calcPoints(auxword);
-							if(score > maxScore){
-								maxScore = score;
-								maxScoreWords.push_back(vector<string>(NULL));
-								maxScoreWords.back().push_back(auxword);
-							}
-							else if(score == maxScore){ 
-								if(find(maxScoreWords.back().begin(), maxScoreWords.back().end(), auxword) == maxScoreWords.back().end()){
-									maxScoreWords.back().push_back(auxword);
-								}
-							}
-						}
+						unsigned int consult = trie->consultTrie(auxword);
+						if(consult != 1 && auxword.size() >= 3) points(auxword);
 						if(consult != 2) findAllWords(a1, a2, auxword, flag);
 					}
 					else if(!flag){
 						vector<string> finalWords = trie->check2ndGen(word,' ');
-						for(size_t i = 0; i<finalWords.size(); i++){
-							score = calcPoints(finalWords[i]);
-							if(score > maxScore){
-								maxScore = score;
-								maxScoreWords.push_back(vector<string>(NULL));
-								maxScoreWords.back().push_back(finalWords[i]);
-							}
-							else if(score == maxScore){ 
-								if(find(maxScoreWords.back().begin(), maxScoreWords.back().end(), finalWords[i]) == maxScoreWords.back().end()){
-									maxScoreWords.back().push_back(finalWords[i]);
-								}
-							}
-						}
+						for(size_t i = 0; i<finalWords.size(); i++)
+							points(finalWords[i]);
+						vector<string> incompleteWords = trie->check2ndGen(word, board[a1][a2]);
+						for(size_t i = 0; i < incompleteWords.size(); i++)
+							findAllWords(a1, a2, incompleteWords.at(i), 1);
 					}
 				}
       }
@@ -151,23 +128,23 @@ int _tmain(int argc, _TCHAR* argv[])
 
   /* Find words in board */
   vector<string> incompleteWords;
-  for(int ii = 0; ii < DIM; ii++){
-    for(int jj = 0; jj < DIM; jj++){
+  for(unsigned int ii = 0; ii < DIM; ii++){
+    for(unsigned int jj = 0; jj < DIM; jj++){
       incompleteWords = trie->check2ndGen("", board[ii][jj]);
-      for (int a = 0; a < incompleteWords.size(); a++) {
+      for(size_t a = 0; a < incompleteWords.size(); a++)
         findAllWords(ii, jj, incompleteWords[a], 1);
-      }
       string boardLetter(1, board[ii][jj]);
       findAllWords(ii, jj, boardLetter, 0);
     }
   }
 
+	/* Search combinations of the words with maximum score and hash creation */
   for(size_t i = 0; i < maxScoreWords.back().size(); i++){
-    cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
+    //cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
     if(mixWords(maxScoreWords.back().at(i), hash)) break;
   }
 
-  cout << (clock()-start)/(float)(CLOCKS_PER_SEC) << endl; // comment out this line for final submission
+  //cout << (clock()-start)/(float)(CLOCKS_PER_SEC) << endl;
   delete trie;
   return 0;
 }
