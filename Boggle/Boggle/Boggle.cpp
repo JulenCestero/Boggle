@@ -75,40 +75,6 @@ int calcPoints(const string word)
   return totalPoints + differentWords;
 }
 
-void findWord(int posx, int posy, string word)
-{
-  vector<char> children = trie->getChildren(word);
-	unsigned int score, consult;
-  if(!children.empty()){
-    visited[posx][posy] = true;
-    for(int a1 = posx - 1; a1 < posx + 2; a1++){
-      for(int a2 = posy - 1; a2 < posy + 2; a2++){
-        if(!visited[a1][a2] && a1 >= 0 && a1<DIM && a2 >= 0 && a2<DIM){
-					if(find(children.begin(), children.end(), board[a1][a2]) != children.end()){
-						string auxword(word + board[a1][a2]);
-						consult = trie->consultTrie(auxword);
-						if(consult != 1 && auxword.size() >= 3){
-							score = calcPoints(auxword);
-							if(score > maxScore){
-								maxScore = score;
-								maxScoreWords.push_back(vector<string>(NULL));
-								maxScoreWords.back().push_back(auxword);
-							}
-							else if(score == maxScore){ 
-								if(find(maxScoreWords.back().begin(), maxScoreWords.back().end(), auxword) == maxScoreWords.back().end()){
-									maxScoreWords.back().push_back(auxword);
-								}
-							}
-						}
-						if(consult != 2) findWord(a1, a2, auxword);
-					}
-        }
-      }
-    }
-  }
-	visited[posx][posy] = false;
-}
-
 void findAllWords(int posx, int posy, string word, bool flag)
 {
   vector<char> children = trie->getChildren(word);
@@ -188,8 +154,9 @@ int _tmain(int argc, _TCHAR* argv[])
   for(int ii = 0; ii < DIM; ii++){
     for(int jj = 0; jj < DIM; jj++){
       incompleteWords = trie->check2ndGen("", board[ii][jj]);
-      for(int a = 0; a<incompleteWords.size(); a++)
-        findWord(ii, jj, incompleteWords[a]);
+      for (int a = 0; a < incompleteWords.size(); a++) {
+        findAllWords(ii, jj, incompleteWords[a], 1);
+      }
       string boardLetter(1, board[ii][jj]);
       findAllWords(ii, jj, boardLetter, 0);
     }
