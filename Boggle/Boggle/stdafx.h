@@ -20,7 +20,7 @@
 #include <math.h>
 #include <sstream>
 #include <iomanip>
-
+#include <openssl/sha.h>
 
 using namespace std;
 
