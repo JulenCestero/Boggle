@@ -92,7 +92,7 @@ void findAllWords(int posx, int posy, string word, bool flag)
         if(!visited[a1][a2] && a1 >= 0 && a1<DIM && a2 >= 0 && a2<DIM){
 					if(find(children.begin(), children.end(), board[a1][a2]) != children.end()){
 						string auxword(word + board[a1][a2]);
-            if(auxword.size() < 3) findAllWords(a1, a2, auxword, flag);
+            if(auxword.length() < 3) findAllWords(a1, a2, auxword, flag);
             else{
               unsigned int consult = trie->consultTrie(auxword);
               if(consult != 1) points(auxword);

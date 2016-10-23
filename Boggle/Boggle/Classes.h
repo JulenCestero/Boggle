@@ -2,7 +2,7 @@
 
 class Node {
 public:
-	Node();
+	Node(char letter);
   ~Node(){;}
 
 	void setContent(char c) {mContent = c;}
@@ -25,7 +25,7 @@ private:
 
 class Trie {
 public:
-	Trie(){root = new Node();}
+	Trie(){root = new Node(' ');}
 	~Trie(){;}
 	void addDictionary();
   int consultTrie(string s);
