@@ -122,8 +122,7 @@ int _tmain(int argc, _TCHAR* argv[])
   getline(cin, boardstring);
   getline(cin, hash);
   trie->addDictionary();
-	cout << (clock()-start)/(float)(CLOCKS_PER_SEC) << endl;
-	const auto start1 = clock(); 
+
   /* Charge the letters into the board */
   for(int ii = 0; ii < DIM; ii++){
     for(int jj = 0; jj < DIM; jj++){
@@ -150,7 +149,7 @@ int _tmain(int argc, _TCHAR* argv[])
     if(mixWords(maxScoreWords.back().at(i), hash)) break;
   }
 
-  cout << (clock()-start1)/(float)(CLOCKS_PER_SEC) << endl;
+  cout << (clock()-start)/(float)(CLOCKS_PER_SEC) << endl;
   delete trie;
   return 0;
 }

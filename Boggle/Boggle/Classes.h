@@ -2,7 +2,7 @@
 
 class Node {
 public:
-  Node() {mContent = ' '; mMarker = false;}
+	Node();
   ~Node(){;}
 
 	void setContent(char c) {mContent = c;}
@@ -14,13 +14,13 @@ public:
 	vector<Node*> children() {return mChildren;}
 
 	Node* findChild(char c);
-	void appendChild(Node* child) {mChildren.push_back(child);}
+	//void appendChild(Node* child) {mChildren.push_back(child);}
+	void appendChild(Node* child) {mChildren[child->content()-97] = child;}
 
 private:
   char mContent;
   bool mMarker;
 	vector<Node*> mChildren;	//optimizable, sabemos que como max tamaño = 26
-	//array<Node*, 26> mChildren;
 };
 
 class Trie {
