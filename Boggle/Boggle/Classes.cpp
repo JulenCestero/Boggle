@@ -40,8 +40,7 @@ int Trie::consultTrie(string s)
     current = current->findChild(s[i]);
   
   if(current->wordMarker()){
-		vector<Node*> children = current->children();
-		if(children.size() != 0) return 3;
+		if(!current->children().empty()) return 3;
 		else return 2;
 	} 
   else return 1;
@@ -51,13 +50,13 @@ vector<char> Trie::getChildren(string s)
 {
 	vector<char> kids;
   Node* current = root;
-  for(size_t i = 0; i < s.length(); i++)
+  for(size_t i = 0; i < s.length(); i++){
     current = current->findChild(s[i]);
-  
+	}
   vector<Node*> childNodes = current->children();
-  for(size_t i = 0; i < childNodes.size(); i++)
+  for(size_t i = 0; i < childNodes.size(); i++){
 		kids.push_back(childNodes[i]->content());
-
+	}
 	return kids;
 }
 
@@ -72,9 +71,11 @@ vector<string> Trie::check2ndGen(string s, char sn)
 	for(size_t i = 0; i < FirstSons.size(); i++){
 		if(sn != ' '){
 			SecondNodes = FirstSons[i]->children();
-			for(size_t j = 0; j < SecondNodes.size(); j++)
-				if(SecondNodes[j]->content() == sn) 
+			for(size_t j = 0; j < SecondNodes.size(); j++){					// optimizable ??????????????????
+				if(SecondNodes[j]->content() == sn){
 					incompleteWords.push_back(s + FirstSons[i]->content() + sn);
+				}
+			}
 		}
 		else if(FirstSons[i]->wordMarker()) incompleteWords.push_back(s + FirstSons[i]->content());
 	}

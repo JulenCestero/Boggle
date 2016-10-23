@@ -32,14 +32,16 @@ string sha256(const string str)
 
 bool mixWords(string word, string hash)
 {
-  string bin, aux;
+  string bin, aux, auxHash;
   for (size_t ii = 0; ii < pow(2, word.length()); ii++) {
     aux = word;
     bin = bitset<DIM*DIM+1>(ii).to_string();
-    for(size_t jj = 0; jj < word.size(); jj++)
-      if(bin[DIM*DIM - jj] == '1')
+    for(size_t jj = 0; jj < word.size(); jj++){
+      if(bin[DIM*DIM - jj] == '1'){
         aux[jj] = word[jj] - 32;
-    string auxHash = sha256(aux);
+			}
+		}
+    auxHash = sha256(aux);
     if(hash.compare(auxHash) == 0){
       cout << aux << endl;
       return 1;
@@ -90,9 +92,12 @@ void findAllWords(int posx, int posy, string word, bool flag)
         if(!visited[a1][a2] && a1 >= 0 && a1<DIM && a2 >= 0 && a2<DIM){
 					if(find(children.begin(), children.end(), board[a1][a2]) != children.end()){
 						string auxword(word + board[a1][a2]);
-						unsigned int consult = trie->consultTrie(auxword);
-						if(consult != 1 && auxword.size() >= 3) points(auxword);
-						if(consult != 2) findAllWords(a1, a2, auxword, flag);
+            if(auxword.size() < 3) findAllWords(a1, a2, auxword, flag);
+            else{
+              unsigned int consult = trie->consultTrie(auxword);
+              if(consult != 1) points(auxword);
+              if(consult != 2) findAllWords(a1, a2, auxword, flag);
+            }
 					}
 					else if(!flag){
 						vector<string> finalWords = trie->check2ndGen(word,' ');
@@ -105,8 +110,8 @@ void findAllWords(int posx, int posy, string word, bool flag)
 				}
       }
     }
+		visited[posx][posy] = false;
   }
-	visited[posx][posy] = false;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -117,7 +122,8 @@ int _tmain(int argc, _TCHAR* argv[])
   getline(cin, boardstring);
   getline(cin, hash);
   trie->addDictionary();
-
+	cout << (clock()-start)/(float)(CLOCKS_PER_SEC) << endl;
+	const auto start1 = clock(); 
   /* Charge the letters into the board */
   for(int ii = 0; ii < DIM; ii++){
     for(int jj = 0; jj < DIM; jj++){
@@ -144,7 +150,7 @@ int _tmain(int argc, _TCHAR* argv[])
     if(mixWords(maxScoreWords.back().at(i), hash)) break;
   }
 
-  //cout << (clock()-start)/(float)(CLOCKS_PER_SEC) << endl;
+  cout << (clock()-start1)/(float)(CLOCKS_PER_SEC) << endl;
   delete trie;
   return 0;
 }

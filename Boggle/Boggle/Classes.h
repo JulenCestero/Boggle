@@ -20,6 +20,7 @@ private:
   char mContent;
   bool mMarker;
 	vector<Node*> mChildren;	//optimizable, sabemos que como max tamaño = 26
+	//array<Node*, 26> mChildren;
 };
 
 class Trie {
@@ -27,7 +28,6 @@ public:
 	Trie(){root = new Node();}
 	~Trie(){;}
 	void addDictionary();
-	void addWord(string s);
   int consultTrie(string s);
 	vector<char> getChildren(string s);
 	vector<string> check2ndGen(string s, char sn);
