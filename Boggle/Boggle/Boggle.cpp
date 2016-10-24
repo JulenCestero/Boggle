@@ -50,22 +50,22 @@ bool mixWords(const string* word, const string* hash)
   return 0;
 }
 
-void points(const string word)
+void points(const string* word)
 {
   unsigned int letterPoints = 0, differentWords = 0, score;
 
   // Puntos por letra
-  for(size_t ii = 0; ii < word.length(); ii++)
-    letterPoints += letters[word[ii] - 97];
+  for(size_t ii = 0; ii < word->length(); ii++)
+    letterPoints += letters[word->at(ii) - 97];
 
   // Puntos por longitud
-  letterPoints += word.length() - 2; 
+  letterPoints += word->length() - 2; 
 
   // Puntos por entropía
   vector<char> aux;
-  for(size_t ii = 0; ii < word.length(); ii++){
-    if(find(aux.begin(), aux.end(), word[ii]) == aux.end()){
-      aux.push_back(word[ii]);
+  for(size_t ii = 0; ii < word->length(); ii++){
+    if(find(aux.begin(), aux.end(), word->at(ii)) == aux.end()){
+      aux.push_back(word->at(ii));
       differentWords++;
     }
   }
@@ -73,11 +73,11 @@ void points(const string word)
 	if(score > maxScore){
 		maxScore = score;
 		maxScoreWords.push_back(vector<string>(NULL));
-		maxScoreWords.back().push_back(word);
+		maxScoreWords.back().push_back(word[0]);
 	}
 	else if(score == maxScore){ 
-		if(find(maxScoreWords.back().begin(), maxScoreWords.back().end(), word) == maxScoreWords.back().end()){
-			maxScoreWords.back().push_back(word);
+		if(find(maxScoreWords.back().begin(), maxScoreWords.back().end(), word[0]) == maxScoreWords.back().end()){
+			maxScoreWords.back().push_back(word[0]);
 		}
 	}
 }
@@ -96,14 +96,14 @@ void findAllWords(int posx, int posy, const string* word, bool flag)
             if(auxword.length() < 3) findAllWords(a1, a2, &auxword, flag);
             else{
               unsigned int consult = trie->consultTrie(&auxword);
-              if(consult != 1) points(auxword);
+              if(consult != 1) points(&auxword);
               if(consult != 2) findAllWords(a1, a2, &auxword, flag);
             }
 					}
 					else if(!flag){
 						vector<string> finalWords = trie->check2ndGen(word, &tmp);
             for (size_t i = 0; i < finalWords.size(); i++) {
-              points(finalWords[i]);
+              points(&finalWords[i]);
             }
 						vector<string> incompleteWords = trie->check2ndGen(word, &board[a1][a2]);
             for (size_t i = 0; i < incompleteWords.size(); i++) {
