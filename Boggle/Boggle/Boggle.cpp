@@ -7,6 +7,13 @@
 #include "stdafx.h"
 #include "Classes.h"
 
+
+// pruebas ane
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <cerrno>
+
 /* GLOBAL VARIABLES */
 Trie* trie = new Trie();
 static unsigned int letters[] = { 1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10 };
@@ -117,15 +124,33 @@ void findAllWords(int posx, int posy, const string* word, bool flag)
   }
 }
 
+string get_file_contents(const char *filename)
+{
+  ifstream in(filename, ios::in | ios::binary);
+  if(in){
+    ostringstream contents;
+    contents << in.rdbuf();
+    in.close();
+    return(contents.str());
+  }
+  throw(errno);
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
   /* Charge Trie, hash and auxiliar variable for board */
   const auto start = clock();  
+
+  string file = get_file_contents("input1.txt");
+  cout << (clock()-start)/(float)(CLOCKS_PER_SEC) << endl;
+
+
   string boardstring, hash;
   getline(cin, boardstring);
   getline(cin, hash);
   trie->addDictionary();
 
+  const auto start1 = clock();  
   /* Charge the letters into the board */
   for(int ii = 0; ii < DIM; ii++){
     for(int jj = 0; jj < DIM; jj++){
@@ -154,7 +179,7 @@ int _tmain(int argc, _TCHAR* argv[])
     if(mixWords(&maxScoreWords.back().at(i), &hash)) break;
   }
 
-  cout << (clock()-start)/(float)(CLOCKS_PER_SEC) << endl;
+  cout << (clock()-start1)/(float)(CLOCKS_PER_SEC) << endl;
   delete trie;
   return 0;
 }

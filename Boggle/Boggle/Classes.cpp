@@ -22,6 +22,7 @@ Node* Node::findChild(const char* c)
 void Trie::addDictionary()
 {
 	string line;
+  vector<string> dictionary;
 	while(getline(cin,line)){
 		int len = line.length();
 		if(len >= 3 && len <= DIM*DIM + 1){
