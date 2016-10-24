@@ -2,7 +2,7 @@
 
 class Node {
 public:
-	Node(char letter);
+	Node(const char* letter);
   ~Node(){;}
 
 	void setContent(char c) {mContent = c;}
@@ -13,7 +13,7 @@ public:
 	bool wordMarker() {return mMarker;}
 	vector<Node*> children() {return mChildren;}
 
-	Node* findChild(char c);
+	Node* findChild(const char* c);
 	//void appendChild(Node* child) {mChildren.push_back(child);}
 	void appendChild(Node* child) {mChildren[child->content()-97] = child;}
 
@@ -25,13 +25,14 @@ private:
 
 class Trie {
 public:
-	Trie(){root = new Node(' ');}
+	Trie(){root = new Node(&mTmp);}
 	~Trie(){;}
 	void addDictionary();
-  int consultTrie(string s);
-	vector<char> getChildren(string s);
-	vector<string> check2ndGen(string s, char sn);
+  int consultTrie(const string* s);
+	vector<char> getChildren(const string* s);
+	vector<string> check2ndGen(const string* s, const char* sn);
 
 private:
     Node* root;
+    char mTmp = ' ';
 };
