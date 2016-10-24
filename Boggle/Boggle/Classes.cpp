@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "Classes.h"
 
-Node::Node(const char* letter)
+Node::Node(char letter)
 {
-	mContent = letter[0]; 
+	mContent = letter; 
 	mMarker = false; 
 	Node* arr[26] = {NULL};
 	mChildren.assign(arr,arr+26);
@@ -30,7 +30,7 @@ void Trie::addDictionary()
 				Node* child = current->findChild(&line[i]);
 				if(child != NULL) current = child;
 				else{
-					Node* tmp = new Node(&line[i]);
+					Node* tmp = new Node(line[i]);
 					current->appendChild(tmp);
 					current = tmp;
 				}
