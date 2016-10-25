@@ -44,9 +44,9 @@ void Trie::addDictionary()
 int Trie::consultTrie(const string* s)
 {
   Node* current = root;
-  for(size_t i = 0; i < s->length(); i++)
+  for(size_t i = 0; i < s->length(); i++){
     current = current->findChild(&s->at(i));
-  
+	}
   if(current->wordMarker()){
 		if(!current->children().empty()) return 3;
 		else return 2;

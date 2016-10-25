@@ -89,32 +89,29 @@ void points(const string* word)
 	}
 }
 
-void findAllWords(int posx, int posy, const string* word, bool flag)
+void findWords(const int posx, const int posy, const string* word, const bool flag)
 {
   vector<char> children = trie->getChildren(word);
-  char tmp = ' ';
   if(!children.empty()){
     visited[posx][posy] = true;
-    for(int a1 = posx - 1; a1 < posx + 2; a1++){
-      for(int a2 = posy - 1; a2 < posy + 2; a2++){
-        if(!visited[a1][a2] && a1 >= 0 && a1<DIM && a2 >= 0 && a2<DIM){
-					if(find(children.begin(), children.end(), board[a1][a2]) != children.end()){
+    for(int a1 = posx - 1 && a1 > 0; a1 <= posx + 1 && a1 < DIM; a1++){
+      for(int a2 = posy - 1 && a2 > 0; a2 <= posy + 1 && a2 < DIM; a2++){
+        if(!visited[a1][a2]){
+					if(children[board[a1][a2] - 97] != NULL){
 						string auxword(word[0] + board[a1][a2]);
-            if(auxword.length() < 3) findAllWords(a1, a2, &auxword, flag);
+            if(auxword.length() < 3) findWords(a1, a2, &auxword, flag);
             else{
-              unsigned int consult = trie->consultTrie(&auxword);
-              if(consult != 1) points(&auxword);
-              if(consult != 2) findAllWords(a1, a2, &auxword, flag);
+              if(trie->consultTrie(&auxword) != 1) points(&auxword);
+              if(trie->consultTrie(&auxword) != 2) findWords(a1, a2, &auxword, flag);
             }
 					}
 					else if(!flag){
-						vector<string> finalWords = trie->check2ndGen(word, &tmp);
-            for (size_t i = 0; i < finalWords.size(); i++) {
+						vector<string> finalWords = trie->check2ndGen(word, " "), incompleteWords = trie->check2ndGen(word, &board[a1][a2]);
+            for(size_t i = 0; i < finalWords.size(); i++){
               points(&finalWords[i]);
             }
-						vector<string> incompleteWords = trie->check2ndGen(word, &board[a1][a2]);
-            for (size_t i = 0; i < incompleteWords.size(); i++) {
-              findAllWords(a1, a2, &incompleteWords.at(i), 1);
+            for(size_t i = 0; i < incompleteWords.size(); i++){
+              findWords(a1, a2, &incompleteWords.at(i), 1);
             }
 					}
 				}
@@ -136,26 +133,32 @@ string get_file_contents(const char *filename)
   throw(errno);
 }
 
+long getSizeOfInput(FILE *input){
+  long retvalue = 0;
+  fseek(input, 0L, SEEK_END);
+  retvalue = ftell(input);
+  fseek(input, 0L, SEEK_SET);
+  return retvalue;
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
   /* Charge Trie, hash and auxiliar variable for board */
   const auto start = clock();  
 
-  string file = get_file_contents("input1.txt");
-  cout << (clock()-start)/(float)(CLOCKS_PER_SEC) << endl;
-
+  //string file = get_file_contents("input1.txt");
+  //cout << (clock()-start)/(float)(CLOCKS_PER_SEC) << endl;
 
   string boardstring, hash;
   getline(cin, boardstring);
   getline(cin, hash);
   trie->addDictionary();
 
-  const auto start1 = clock();  
   /* Charge the letters into the board */
+	bool visited[DIM][DIM] = {{false}};
   for(int ii = 0; ii < DIM; ii++){
     for(int jj = 0; jj < DIM; jj++){
       board[ii][jj] = boardstring[DIM * ii + jj];
-      visited[ii][jj] = false;
     }
   }
 
@@ -165,21 +168,20 @@ int _tmain(int argc, _TCHAR* argv[])
   for(unsigned int ii = 0; ii < DIM; ii++){
     for(unsigned int jj = 0; jj < DIM; jj++){
       incompleteWords = trie->check2ndGen(&tmp, &board[ii][jj]);
-      for (size_t a = 0; a < incompleteWords.size(); a++) {
-        findAllWords(ii, jj, &incompleteWords[a], 1);
+      for(size_t a = 0; a < incompleteWords.size(); a++){
+        findWords(ii, jj, &incompleteWords[a], 1);
       }
       string boardLetter(1, board[ii][jj]);
-      findAllWords(ii, jj, &boardLetter, 0);
+      findWords(ii, jj, &boardLetter, 0);
     }
   }
 
 	/* Search combinations of the words with maximum score and hash creation */
   for(size_t i = 0; i < maxScoreWords.back().size(); i++){
-    //cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
     if(mixWords(&maxScoreWords.back().at(i), &hash)) break;
   }
 
-  cout << (clock()-start1)/(float)(CLOCKS_PER_SEC) << endl;
+  cout << (clock()-start)/(float)(CLOCKS_PER_SEC) << endl;
   delete trie;
   return 0;
 }
