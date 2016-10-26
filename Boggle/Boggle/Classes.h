@@ -5,6 +5,8 @@ public:
 	Node(char letter);
   ~Node(){;}
 
+	void addWord(const char* word);
+
 	void setContent(char c) {mContent = c;}
 	void setMarker(bool m) {mMarker = m;}
 	void setChildren(vector<Node*> kids){mChildren = kids;}
@@ -14,7 +16,6 @@ public:
 	vector<Node*> children() {return mChildren;}
 
 	Node* findChild(const char* c);
-	//void appendChild(Node* child) {mChildren.push_back(child);}
 	void appendChild(Node* child) {mChildren[child->content()-97] = child;}
 
 private:

@@ -13,10 +13,14 @@ Node* Node::findChild(const char* c)
 {
 	if (mChildren[c[0] - 97] != NULL) return mChildren[c[0] - 97];
 	else return NULL;
-  /*for(size_t i = 0; i < mChildren.size(); i++)
-		if(mChildren.at(i)->content() == c) 
-			return mChildren.at(i);
-  return NULL;*/
+}
+
+void Node::addWord(const char* word)
+{
+	const char idx = *word - 'a';
+	if(!mChildren[idx]) mChildren[idx] = new Node(*word);
+	if(strlen(word) > 1) mChildren[idx]->addWord(word + 1);
+	else mChildren[idx]->setMarker(true);
 }
 
 void Trie::addDictionary()
@@ -27,7 +31,7 @@ void Trie::addDictionary()
 		int len = line.length();
 		if(len >= 3 && len <= DIM*DIM + 1){
 			Node* current = root;
-			for(int i = 0; i < len; i++){        
+			/*for(int i = 0; i < len; i++){        
 				Node* child = current->findChild(&line[i]);
 				if(child != NULL) current = child;
 				else{
@@ -37,6 +41,8 @@ void Trie::addDictionary()
 				}
 			}
 			current->setMarker(true);
+			*/
+			current->addWord(line.c_str());
 		}
 	}
 }
@@ -78,23 +84,15 @@ vector<string> Trie::check2ndGen(const string* s, const char* sn)
 	for(size_t ii = 0; ii < s->length(); ii++){
 		current = current->findChild(&s->at(ii));
 	}
-
-	vector<Node*> FirstSons = current->children(), SecondNodes;
+	vector<Node*> FirstSons = current->children();
 	for(size_t i = 0; i < FirstSons.size(); i++){
-		if( FirstSons[i] != NULL){
+		if(FirstSons[i] != NULL){
 			char aux = i + 97;
 			if(sn[0] != ' '){
-				SecondNodes = FirstSons[i]->children();
-				/*for(size_t j = 0; j < SecondNodes.size(); j++){					// optimizable ??????????????????
-					if(SecondNodes[j]->content() == sn){
-						incompleteWords.push_back(s + FirstSons[i]->content() + sn);
-					}
-				}*/
-				if(SecondNodes[sn[0] - 97] != NULL) incompleteWords.push_back(s[0] + aux + sn[0]);
+				if(FirstSons[i]->findChild(sn) != NULL) incompleteWords.push_back(s[0] + aux + sn[0]);
 			}
 			else if(FirstSons[i]->wordMarker()) incompleteWords.push_back(s[0] + aux);
 		}
 	}
-
 	return incompleteWords;
 }

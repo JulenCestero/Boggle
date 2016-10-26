@@ -133,14 +133,6 @@ string get_file_contents(const char *filename)
   throw(errno);
 }
 
-long getSizeOfInput(FILE *input){
-  long retvalue = 0;
-  fseek(input, 0L, SEEK_END);
-  retvalue = ftell(input);
-  fseek(input, 0L, SEEK_SET);
-  return retvalue;
-}
-
 int _tmain(int argc, _TCHAR* argv[])
 {
   /* Charge Trie, hash and auxiliar variable for board */
@@ -153,6 +145,8 @@ int _tmain(int argc, _TCHAR* argv[])
   getline(cin, boardstring);
   getline(cin, hash);
   trie->addDictionary();
+	cout << (clock()-start)/(float)(CLOCKS_PER_SEC) << endl;
+	const auto start1 = clock();
 
   /* Charge the letters into the board */
 	bool visited[DIM][DIM] = {{false}};
@@ -181,7 +175,7 @@ int _tmain(int argc, _TCHAR* argv[])
     if(mixWords(&maxScoreWords.back().at(i), &hash)) break;
   }
 
-  cout << (clock()-start)/(float)(CLOCKS_PER_SEC) << endl;
+  cout << (clock()-start1)/(float)(CLOCKS_PER_SEC) << endl;
   delete trie;
   return 0;
 }
