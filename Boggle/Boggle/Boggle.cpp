@@ -7,13 +7,6 @@
 #include "stdafx.h"
 #include "Classes.h"
 
-
-// pruebas ane
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <cerrno>
-
 /* GLOBAL VARIABLES */
 Trie* trie = new Trie();
 static unsigned int letters[] = { 1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10 };
@@ -21,8 +14,6 @@ char board[DIM][DIM];
 bool visited[DIM][DIM];
 unsigned int maxScore = 0;
 vector<vector<string>> maxScoreWords;
-vector<string> mixedWords;
-
 
 string sha256(const string* str)
 {
@@ -40,7 +31,7 @@ string sha256(const string* str)
 bool mixWords(const string* word, const string* hash)
 {
   string bin, aux, auxHash;
-  for (size_t ii = 0; ii < pow(2, word->length()); ii++) {
+  for(size_t ii = 0; ii < pow(2, word->length()); ii++){
     aux = word[0];
     bin = bitset<DIM*DIM+1>(ii).to_string();
     for(size_t jj = 0; jj < word->size(); jj++){
@@ -120,6 +111,12 @@ void findWords(const int posx, const int posy, const string* word, const bool fl
 		visited[posx][posy] = false;
   }
 }
+
+// pruebas ane
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <cerrno>
 
 string get_file_contents(const char *filename)
 {
