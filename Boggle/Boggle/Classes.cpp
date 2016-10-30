@@ -22,7 +22,7 @@ Node* Node::findChild(const char* c)
 void Trie::addDictionary(const vector<string>* aux)
 {
   auto length = aux->size();
-  for (int i = 0; i < length; i++) {
+  for (size_t i = 0; i < length; i++) {
     int len = aux->at(i).length();
     if (len >= 3 && len <= DIM*DIM + 1) {
       Node* current = root;
@@ -62,7 +62,7 @@ vector<char> Trie::getChildren(const string* s)
     current = current->findChild(&s->at(i));
   }
   vector<Node*> childNodes = current->children();
-  for (size_t i = 0; i < childNodes.size(); i++) {
+  for (unsigned char i = 0; i < childNodes.size(); i++) {
     if (childNodes[i] != NULL) {
       kids[i] = i + 97;
     }
@@ -79,7 +79,7 @@ vector<string> Trie::check2ndGen(const string* s, const char* sn)
   }
 
   vector<Node*> FirstSons = current->children(), SecondNodes;
-  for (size_t i = 0; i < FirstSons.size(); i++) {
+  for (unsigned char i = 0; i < FirstSons.size(); i++) {
     if (FirstSons[i] != NULL) {
       char aux = i + 97;
       if (sn[0] != ' ') {
