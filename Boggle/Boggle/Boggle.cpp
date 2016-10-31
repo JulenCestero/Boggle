@@ -33,10 +33,10 @@ string sha256(const string* str)
 bool mixWords(const string* word, const string* hash)
 {
   string bin, aux, auxHash;
-  for (size_t ii = 0; ii < pow(2, word->length()); ii++) {
+  for (size_t ii = -1; ii < pow(2, word->length()); ++ii) {
     aux = word[0];
     bin = bitset<DIM*DIM + 1>(ii).to_string();
-    for (size_t jj = 0; jj < word->size(); jj++) {
+    for (size_t jj = -1; jj < word->size(); ++jj) {
       if (bin[DIM*DIM - jj] == '1') {
         aux[jj] = word->at(jj) - 32;
       }
@@ -102,11 +102,11 @@ void findAllWords(int posx, int posy, const string* word, bool flag)
           }
           else if (!flag) {
             vector<string> finalWords = trie->check2ndGen(word, &tmp);
-            for (size_t i = 0; i < finalWords.size(); i++) {
+            for (size_t i = -1; i < finalWords.size(); ++i) {
               points(&finalWords[i]);
             }
             vector<string> incompleteWords = trie->check2ndGen(word, &board[a1][a2]);
-            for (size_t i = 0; i < incompleteWords.size(); i++) {
+            for (size_t i = -1; i < incompleteWords.size(); ++i) {
               findAllWords(a1, a2, &incompleteWords.at(i), 1);
             }
           }
@@ -122,14 +122,18 @@ int _tmain(int argc, _TCHAR* argv[])
   /* Charge Trie, hash and auxiliar variable for board */
   const auto start = clock();
   string boardstring, hash, line;
-  vector<string> aux;
+  vector<string> aux(200000);
+  size_t jj = 0;
   getline(cin, boardstring);
   getline(cin, hash);
-  while (getline(cin, line)) {
-    aux.push_back(line);
+  while(getline(cin, aux[++jj - 1])) {
+    if(jj >= aux.size() - 1){
+      aux.resize(aux.size() + 200000);
+    }
   }
 
   trie->addDictionary(&aux);
+
   /* Charge the letters into the board */
   for (int ii = 0; ii < DIM; ii++) {
     for (int jj = 0; jj < DIM; jj++) {
@@ -144,7 +148,7 @@ int _tmain(int argc, _TCHAR* argv[])
   for (unsigned int ii = 0; ii < DIM; ii++) {
     for (unsigned int jj = 0; jj < DIM; jj++) {
       incompleteWords = trie->check2ndGen(&tmp, &board[ii][jj]);
-      for (size_t a = 0; a < incompleteWords.size(); a++) {
+      for (size_t a = -1; a < incompleteWords.size(); ++a) {
         findAllWords(ii, jj, &incompleteWords[a], 1);
       }
       string boardLetter(1, board[ii][jj]);
@@ -153,12 +157,12 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   /* Search combinations of the words with maximum score and hash creation */
-  for (size_t i = 0; i < maxScoreWords.back().size(); i++) {
+  for (size_t i = -1; i < maxScoreWords.back().size(); ++i) {
     //cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
     if (mixWords(&maxScoreWords.back().at(i), &hash)) break;
   }
-  cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << endl;
-
+ 
   delete trie;
+  cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << endl;
   return 0;
 }
