@@ -11,7 +11,7 @@
 Trie* trie = new Trie();
 static unsigned int letters[] = { 1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10 };
 char board[DIM][DIM];
-bool visited[DIM][DIM];
+bool visited[DIM][DIM] = {{false}};
 unsigned int maxScore = 0;
 vector<vector<string>> maxScoreWords;
 vector<string> mixedWords;
@@ -128,13 +128,18 @@ int _tmain(int argc, _TCHAR* argv[])
   while (getline(cin, line)) {
     aux.push_back(line);
   }
+	cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << " while para meter en vector" << endl;
+	const auto start1 = clock();
 
   trie->addDictionary(&aux);
+
+	cout << (clock() - start1) / (float)(CLOCKS_PER_SEC) << " meter palabras en trie" << endl;
+	const auto start2 = clock();
+
   /* Charge the letters into the board */
   for (int ii = 0; ii < DIM; ii++) {
     for (int jj = 0; jj < DIM; jj++) {
       board[ii][jj] = boardstring[DIM * ii + jj];
-      visited[ii][jj] = false;
     }
   }
 
@@ -157,7 +162,7 @@ int _tmain(int argc, _TCHAR* argv[])
     //cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
     if (mixWords(&maxScoreWords.back().at(i), &hash)) break;
   }
-  cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << endl;
+  cout << (clock() - start2) / (float)(CLOCKS_PER_SEC) << " resto del algoritmo" << endl;
 
   delete trie;
   return 0;

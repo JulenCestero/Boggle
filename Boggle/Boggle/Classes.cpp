@@ -19,13 +19,22 @@ Node* Node::findChild(const char* c)
   return NULL;*/
 }
 
+void Node::addWord(const char* word)
+{
+	const char idx = *word - 'a';
+	if(!mChildren[idx]) mChildren[idx] = new Node(*word);
+	if(strlen(word) > 1) mChildren[idx]->addWord(word + 1);
+	else mChildren[idx]->setMarker(true);
+}
+
 void Trie::addDictionary(const vector<string>* aux)
 {
   auto length = aux->size();
+	Node* current = root;
   for (size_t i = 0; i < length; i++) {
     int len = aux->at(i).length();
     if (len >= 3 && len <= DIM*DIM + 1) {
-      Node* current = root;
+      /*Node* current = root;
       for (int j = 0; j < len; j++) {
         Node* child = current->findChild(&aux->at(i).at(j));
         if (child != NULL) current = child;
@@ -36,6 +45,8 @@ void Trie::addDictionary(const vector<string>* aux)
         }
       }
       current->setMarker(true);
+			*/
+			current->addWord(aux->at(i).c_str());
     }
   }
 }
