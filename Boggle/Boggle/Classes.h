@@ -2,8 +2,10 @@
 
 class Node {
 public:
-  Node() {mContent = ' '; mMarker = false;}
+	Node(char letter);
   ~Node(){;}
+
+	void addWord(const char* word);
 
 	void setContent(char c) {mContent = c;}
 	void setMarker(bool m) {mMarker = m;}
@@ -13,24 +15,23 @@ public:
 	bool wordMarker() {return mMarker;}
 	vector<Node*> children() {return mChildren;}
 
-	Node* findChild(char c);
-	void appendChild(Node* child) {mChildren.push_back(child);}
+	Node* findChild(const char* c);
+	void appendChild(Node* child) {mChildren[child->content()-97] = child;}
 
 private:
   char mContent;
   bool mMarker;
 	vector<Node*> mChildren;	//optimizable, sabemos que como max tamaño = 26
-	//array<Node*, 26> mChildren;
 };
 
 class Trie {
 public:
-	Trie(){root = new Node();}
+	Trie(){root = new Node(' ');}
 	~Trie(){;}
-	void addDictionary();
-  int consultTrie(string s);
-	vector<char> getChildren(string s);
-	vector<string> check2ndGen(string s, char sn);
+	void addDictionary(const vector<string>* aux);
+  int consultTrie(const string* s);
+	vector<char> getChildren(const string* s);
+	vector<string> check2ndGen(const string* s, const char* sn);
 
 private:
     Node* root;
