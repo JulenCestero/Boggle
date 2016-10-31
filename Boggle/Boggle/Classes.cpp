@@ -13,10 +13,6 @@ Node* Node::findChild(const char* c)
 {
   if (mChildren[c[0] - 97] != NULL) return mChildren[c[0] - 97];
   else return NULL;
-  /*for(size_t i = 0; i < mChildren.size(); i++)
-  if(mChildren.at(i)->content() == c)
-  return mChildren.at(i);
-  return NULL;*/
 }
 
 void Node::addWord(const char* word)
