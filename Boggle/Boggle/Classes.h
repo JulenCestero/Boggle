@@ -2,7 +2,7 @@
 
 class Node {
 public:
-	Node(char letter);
+	Node(const char* letter);
   ~Node(){;}
 
 	void addWord(const char* word);
@@ -26,7 +26,7 @@ private:
 
 class Trie {
 public:
-	Trie(){root = new Node(' ');}
+	Trie(){char a = ' '; root = new Node(&a);}
 	~Trie(){;}
 
 	Node* getRoot(){return root;}

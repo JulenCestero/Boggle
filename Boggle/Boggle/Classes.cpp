@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "Classes.h"
 
-Node::Node(char letter)
+Node::Node(const char* letter)
 {
-  mContent = letter;
-  mMarker = false;
-  Node* arr[26] = { NULL };
-  mChildren.assign(arr, arr + 26);
+  mContent = *letter;
+  //mMarker = false;
+  //Node* arr[26] = {NULL};
+	mChildren.resize(26);
+  //mChildren.assign(arr, arr + 26);
 }
 
 Node* Node::findChild(const char* c)
@@ -18,7 +19,7 @@ Node* Node::findChild(const char* c)
 void Node::addWord(const char* word)
 {
 	const char idx = *word - 'a';
-	if(!mChildren[idx]) mChildren[idx] = new Node(*word);
+	if(!mChildren[idx]) mChildren[idx] = new Node(word);
 	if(strlen(word) > 1) mChildren[idx]->addWord(word + 1);
 	else mChildren[idx]->setMarker(true);
 }
@@ -91,11 +92,6 @@ vector<string> Trie::check2ndGen(const string* s, const char* sn)
       char aux = i + 97;
       if (sn[0] != ' ') {
         SecondNodes = FirstSons[i]->children();
-        /*for(size_t j = 0; j < SecondNodes.size(); j++){					// optimizable ??????????????????
-        if(SecondNodes[j]->content() == sn){
-        incompleteWords.push_back(s + FirstSons[i]->content() + sn);
-        }
-        }*/
         if (SecondNodes[sn[0] - 97] != NULL) incompleteWords.push_back(s[0] + aux + sn[0]);
       }
       else if (FirstSons[i]->wordMarker()) incompleteWords.push_back(s[0] + aux);
