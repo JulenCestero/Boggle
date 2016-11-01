@@ -28,7 +28,9 @@ class Trie {
 public:
 	Trie(){root = new Node(' ');}
 	~Trie(){;}
-	void addDictionary(const vector<string>* aux);
+
+	Node* getRoot(){return root;}
+	//void addDictionary(const vector<string>* aux);
   int consultTrie(const string* s);
 	vector<char> getChildren(const string* s);
 	vector<string> check2ndGen(const string* s, const char* sn);

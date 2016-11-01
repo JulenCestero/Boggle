@@ -117,6 +117,16 @@ void findAllWords(int posx, int posy, const string* word, bool flag)
   }
 }
 
+void addDictionary(const vector<string>* aux)
+{
+  for(size_t i = 0; i < aux->size(); i++){
+    int len = aux->at(i).length();
+    if(len >= 3 && len <= DIM*DIM + 1){			
+			trie->getRoot()->addWord(aux->at(i).c_str());
+    }
+  }
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
   /* Charge Trie, hash and auxiliar variable for board */
@@ -134,7 +144,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << " while para meter en vector" << endl;
 	const auto start1 = clock();
 
-  trie->addDictionary(&aux);
+  //trie->addDictionary(&aux);
+	addDictionary(&aux);
 	cout << (clock() - start1) / (float)(CLOCKS_PER_SEC) << " meter palabras en trie" << endl;
 	const auto start2 = clock();
 

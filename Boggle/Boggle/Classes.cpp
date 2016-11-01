@@ -23,7 +23,7 @@ void Node::addWord(const char* word)
 	else mChildren[idx]->setMarker(true);
 }
 
-void Trie::addDictionary(const vector<string>* aux)
+/*void Trie::addDictionary(const vector<string>* aux)
 {
   auto length = aux->size();
 	Node* current = root;
@@ -41,11 +41,11 @@ void Trie::addDictionary(const vector<string>* aux)
         }
       }
       current->setMarker(true);
-			*/
+			
 			current->addWord(aux->at(i).c_str());
     }
   }
-}
+}*/
 
 int Trie::consultTrie(const string* s)
 {
