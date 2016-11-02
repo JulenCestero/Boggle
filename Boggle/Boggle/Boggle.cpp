@@ -130,24 +130,14 @@ int _tmain(int argc, _TCHAR* argv[])
 {
   /* Charge Trie, hash and auxiliar variable for board */
 	double cont = 0;
-  const auto start = clock();
   string boardstring, hash, line;
-  vector<string> aux(200000);
-  size_t jj = 0;
   getline(cin, boardstring);
   getline(cin, hash);
-  while(getline(cin, aux[++jj - 1])) {
-    if(jj >= aux.size() - 1){
-      aux.resize(aux.size() + 200000);
-    }
-  }
-	cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << " while para meter en vector" << endl;
-	cont += (clock() - start) / (float)(CLOCKS_PER_SEC);
-	const auto start1 = clock();
+	const auto start = clock();
+	trie->addDictionary();
 
-  addDictionary(&aux);
-	cout << (clock() - start1) / (float)(CLOCKS_PER_SEC) << " meter palabras en trie" << endl;
-	cont += (clock() - start1) / (float)(CLOCKS_PER_SEC);
+	cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << " meter palabras en trie" << endl;
+	cont += (clock() - start) / (float)(CLOCKS_PER_SEC);
 	const auto start2 = clock();
 
   /* Charge the letters into the board */

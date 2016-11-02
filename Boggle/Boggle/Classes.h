@@ -30,7 +30,7 @@ public:
 	~Trie(){;}
 
 	Node* getRoot(){return root;}
-	//void addDictionary(const vector<string>* aux);
+	void addDictionary();
   int consultTrie(const string* s);
 	vector<char> getChildren(const string* s);
 	vector<string> check2ndGen(const string* s, const char* sn);
