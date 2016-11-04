@@ -9,11 +9,10 @@ public:
 
 	void setContent(char c) {mContent = c;}
 	void setMarker(bool m) {mMarker = m;}
-	void setChildren(vector<Node*> kids){mChildren = kids;}
 
 	char content() {return mContent;}
 	bool wordMarker() {return mMarker;}
-	vector<Node*> children() {return mChildren;}
+	vector<Node*> children();
 
 	Node* findChild(const char* c);
 	void appendChild(Node* child) {mChildren[child->content()-97] = child;}
@@ -21,7 +20,9 @@ public:
 private:
   char mContent;
   bool mMarker;
-	vector<Node*> mChildren;	//optimizable, sabemos que como max tamaño = 26
+	//vector<Node*> mChildren;	//optimizable, sabemos que como max tamaño = 26
+	Node* mChildren[26];
+
 };
 
 class Trie {

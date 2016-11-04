@@ -88,8 +88,8 @@ void findAllWords(int posx, int posy, const string* word, bool flag)
   char tmp = ' ';
   if (children[0] != 'N') {
     visited[posx][posy] = true;
-    for (int a1 = posx - 1; a1 < posx + 2; a1++) {
-      for (int a2 = posy - 1; a2 < posy + 2; a2++) {
+    for (int a1 = posx - 1; a1 < posx + 2; ++a1) {
+      for (int a2 = posy - 1; a2 < posy + 2; ++a2) {
         if (!visited[a1][a2] && a1 >= 0 && a1<DIM && a2 >= 0 && a2<DIM) {
 					if (children[board[a1][a2] - 'a'] != NULL) {
             string auxword(word[0] + board[a1][a2]);
@@ -102,11 +102,11 @@ void findAllWords(int posx, int posy, const string* word, bool flag)
           }
           if (!flag) {
             vector<string> finalWords = trie->check2ndGen(word, &tmp);
-            for (size_t i = 0; i < finalWords.size(); i++) {
+            for (size_t i = 0; i < finalWords.size(); ++i) {
               points(&finalWords[i]);
             }
             vector<string> incompleteWords = trie->check2ndGen(word, &board[a1][a2]);
-            for (size_t i = 0; i < incompleteWords.size(); i++) {
+            for (size_t i = 0; i < incompleteWords.size(); ++i) {
               findAllWords(a1, a2, &incompleteWords.at(i), 1);
             }
           }
