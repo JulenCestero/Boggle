@@ -54,13 +54,16 @@ vector<char> Trie::getChildren(const string* s)
   for (size_t i = 0; i < s->length(); i++) {
     current = current->findChild(&s->at(i));
   }
-  vector<Node*> childNodes = current->children();
-  for (unsigned char i = 0; i < childNodes.size(); i++) {
-    if (childNodes[i] != NULL) {
-      kids[i] = i + 97;
-    }
-  }
-  return kids;
+	if(current != NULL){
+		vector<Node*> childNodes = current->children();
+		for (unsigned char i = 0; i < childNodes.size(); i++) {
+			if (childNodes[i] != NULL) {
+				kids[i] = i + 97;
+			}
+		}
+	}
+	else kids[0] = 'N';
+	return kids;
 }
 
 vector<string> Trie::check2ndGen(const string* s, const char* sn)
