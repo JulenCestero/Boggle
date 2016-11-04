@@ -91,7 +91,7 @@ void findAllWords(int posx, int posy, const string* word, bool flag)
     for (int a1 = posx - 1; a1 < posx + 2; a1++) {
       for (int a2 = posy - 1; a2 < posy + 2; a2++) {
         if (!visited[a1][a2] && a1 >= 0 && a1<DIM && a2 >= 0 && a2<DIM) {
-          if (find(children.begin(), children.end(), board[a1][a2]) != children.end()) {
+					if (children[board[a1][a2] - 'a'] != NULL) {
             string auxword(word[0] + board[a1][a2]);
             if (auxword.length() < 3) findAllWords(a1, a2, &auxword, flag);
             else {
