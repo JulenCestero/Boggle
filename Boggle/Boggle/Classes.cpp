@@ -17,18 +17,21 @@ Node* Node::findChild(const char* c)
 
 void Node::addWord(const char* word)
 {
-	const char idx = *word - 'a';
-	if(!mChildren[idx]) mChildren[idx] = new Node(word);
-	if(strlen(word) > 1) mChildren[idx]->addWord(word + 1);
-	else mChildren[idx]->setMarker(true);
+  auto aux = *word;
+  const char idx = aux - 'a';
+  if (aux != '\n') {  
+    if (!mChildren[idx]) mChildren[idx] = new Node(word);
+    mChildren[idx]->addWord(word + 1);
+  }
+  else mMarker = true;
 }
 
 void Trie::addDictionary()
 {
-	string line;
-	while(getline(cin, line)) {
-		if(line.length() >= 3 && line.length() <= DIM*DIM + 1) 
-			root->addWord(line.c_str());
+  char buffer[80];
+  char* result;
+  while ((result = fgets(buffer, 80, stdin)) != NULL) {
+    root->addWord(result);
   }
 }
 
