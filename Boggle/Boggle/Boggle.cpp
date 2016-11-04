@@ -86,7 +86,7 @@ void findAllWords(int posx, int posy, const string* word, bool flag)
 {
   vector<char> children = trie->getChildren(word);
   char tmp = ' ';
-  if (!children.empty()) {
+  if (children[0] != 'N') {
     visited[posx][posy] = true;
     for (int a1 = posx - 1; a1 < posx + 2; a1++) {
       for (int a2 = posy - 1; a2 < posy + 2; a2++) {
@@ -100,7 +100,7 @@ void findAllWords(int posx, int posy, const string* word, bool flag)
               if (consult != 2) findAllWords(a1, a2, &auxword, flag);
             }
           }
-          else if (!flag) {
+          if (!flag) {
             vector<string> finalWords = trie->check2ndGen(word, &tmp);
             for (size_t i = 0; i < finalWords.size(); i++) {
               points(&finalWords[i]);
