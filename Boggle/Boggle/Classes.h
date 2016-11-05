@@ -13,14 +13,11 @@ public:
 	char content() {return mContent;}
 	bool wordMarker() {return mMarker;}
 	vector<Node*> children();
-
 	Node* findChild(const char* c);
-	void appendChild(Node* child) {mChildren[child->content()-97] = child;}
 
 private:
   char mContent;
   bool mMarker;
-	//vector<Node*> mChildren;	//optimizable, sabemos que como max tamaño = 26
 	Node* mChildren[26];
 
 };
