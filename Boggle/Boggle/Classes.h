@@ -31,6 +31,7 @@ public:
 	Node* getRoot(){return root;}
 	void addDictionary();
   int consultTrie(const string* s);
+	int consultTrie2(Node* node);
 	vector<char> getChildren(const string* s);
 	vector<string> check2ndGen(const string* s, const char* sn);
 

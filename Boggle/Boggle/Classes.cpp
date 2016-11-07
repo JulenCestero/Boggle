@@ -3,6 +3,7 @@
 
 Node::Node()
 {
+	mMarker = false;
   fill_n(mChildren,26,nullptr);
 }
 
@@ -60,6 +61,17 @@ int Trie::consultTrie(const string* s)
   }
   else return 1;
 }
+
+int Trie::consultTrie2(Node* node)
+{
+  if(node->wordMarker()){
+    if(!node->children().empty()) return 3;
+    else return 2;
+  }
+  else return 1;
+}
+
+
 
 vector<char> Trie::getChildren(const string* s)
 {

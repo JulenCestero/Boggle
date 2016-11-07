@@ -84,28 +84,30 @@ void points(const string* word)
   }
 }
 
-void findAllWords(int posx, int posy, const string* word, bool flag, const vector<Node*>* nodes)
+void findAllWords(int posx, int posy, const string* word, bool flag, vector<Node*>* nodes)
 {
-	//vector<char> children = nodes[nodes.size() - 1]->charkids();
-	vector<char> children = trie->getChildren(word);
+	vector<char> children = nodes->at(nodes->size() - 1)->charkids();
+	//vector<char> children = trie->getChildren(word);
   const char tmp = ' ';
-	//if(children.size() != 0){
-	if(children[0] != 'N'){
+	if(children.size() != 0){
+	//if(children[0] != 'N'){
     visited[posx][posy] = true;
     for(int a1 = posx - 1; a1 < posx + 2; ++a1){
       for(int a2 = posy - 1; a2 < posy + 2; ++a2){
         if(!visited[a1][a2] && a1 >= 0 && a1<DIM && a2 >= 0 && a2<DIM){
-					//if(children[board[a1][a2] - 'a'] > 96){
-					if(children[board[a1][a2] - 'a'] != NULL){
+					if(children[board[a1][a2] - 'a'] > 96){
+					//if(children[board[a1][a2] - 'a'] != NULL){
             string auxword(word[0] + board[a1][a2]);
+						nodes->push_back(nodes->at(nodes->size()-1)->findChild(&board[a1][a2]));
 						if(auxword.length() < 3) findAllWords(a1, a2, &auxword, flag, &nodes[0]);
             else{
-              unsigned int consult = trie->consultTrie(&auxword);
+              unsigned int consult = trie->consultTrie2(nodes->at(nodes->size() - 1));
               if (consult != 1) points(&auxword);
 							if (consult != 2) findAllWords(a1, a2, &auxword, flag, &nodes[0]);
             }
+						nodes->erase(nodes->end() - 1);
           }
-          if(!flag){
+          /*if(!flag){
             vector<string> finalWords = trie->check2ndGen(word, &tmp);
             for(size_t i = 0; i < finalWords.size(); ++i){
               points(&finalWords[i]);
@@ -114,7 +116,7 @@ void findAllWords(int posx, int posy, const string* word, bool flag, const vecto
             for(size_t i = 0; i < incompleteWords.size(); ++i){
               findAllWords(a1, a2, &incompleteWords.at(i), 1, &nodes[0]);
             }
-          }
+          }*/
         }
       }
     }
