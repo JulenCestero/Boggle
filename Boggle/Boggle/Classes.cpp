@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "Classes.h"
 
-Node::Node(const char* letter)
+Node::Node()
 {
-  mContent = *letter;
   fill_n(mChildren,26,nullptr);
 }
 
@@ -20,12 +19,21 @@ vector<Node*> Node::children(){
 	return kids;
 }
 
+vector<char> Node::charkids(){
+	vector<char> kids(26);
+	for(size_t i = 0; i<26; ++i){
+		if(mChildren[i] != NULL)
+			kids[i] = i + 'a';
+	}
+	return kids;
+}
+
 void Node::addWord(const char* word)
 {
   auto aux = *word;
   const char idx = aux - 'a';
   if(aux != '\n'){  
-    if(!mChildren[idx]) mChildren[idx] = new Node(word);
+    if(!mChildren[idx]) mChildren[idx] = new Node();
     mChildren[idx]->addWord(word + 1);
   }
   else mMarker = true;
