@@ -84,7 +84,7 @@ void points(const string* word)
   }
 }
 
-void findAllWords(int posx, int posy, const string* word, bool flag, vector<Node*> nodes)
+void findAllWords(int posx, int posy, const string* word, bool flag, const vector<Node*>* nodes)
 {
 	//vector<char> children = nodes[nodes.size() - 1]->charkids();
 	vector<char> children = trie->getChildren(word);
@@ -98,11 +98,11 @@ void findAllWords(int posx, int posy, const string* word, bool flag, vector<Node
 					//if(children[board[a1][a2] - 'a'] > 96){
 					if(children[board[a1][a2] - 'a'] != NULL){
             string auxword(word[0] + board[a1][a2]);
-						if(auxword.length() < 3) findAllWords(a1, a2, &auxword, flag, nodes);
+						if(auxword.length() < 3) findAllWords(a1, a2, &auxword, flag, &nodes[0]);
             else{
               unsigned int consult = trie->consultTrie(&auxword);
               if (consult != 1) points(&auxword);
-							if (consult != 2) findAllWords(a1, a2, &auxword, flag, nodes);
+							if (consult != 2) findAllWords(a1, a2, &auxword, flag, &nodes[0]);
             }
           }
           if(!flag){
@@ -112,7 +112,7 @@ void findAllWords(int posx, int posy, const string* word, bool flag, vector<Node
             }
             vector<string> incompleteWords = trie->check2ndGen(word, &board[a1][a2]);
             for(size_t i = 0; i < incompleteWords.size(); ++i){
-              findAllWords(a1, a2, &incompleteWords.at(i), 1, nodes);
+              findAllWords(a1, a2, &incompleteWords.at(i), 1, &nodes[0]);
             }
           }
         }
@@ -172,12 +172,12 @@ int _tmain(int argc, _TCHAR* argv[])
 				nodes[0] = trie->getRoot();
 				nodes[1] = nodes[0]->findChild(&str[0]);
 				nodes[2] = nodes[1]->findChild(&str[1]);
-				findAllWords(ii, jj, &incompleteWords[a], 1, nodes);
+				findAllWords(ii, jj, &incompleteWords[a], 1, &nodes);
       }
       string boardLetter(1, board[ii][jj]);
 			vector<Node*> nodes;
 			nodes.push_back(trie->getRoot());
-			findAllWords(ii, jj, &boardLetter, 0, nodes);
+			findAllWords(ii, jj, &boardLetter, 0, &nodes);
     }
   }
 	cout << (clock() - start2) / (float)(CLOCKS_PER_SEC) << " buscar en board" << endl;
