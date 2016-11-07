@@ -13,8 +13,9 @@ static unsigned int letters[] = { 1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3
 char board[DIM][DIM];
 bool visited[DIM][DIM] = {{false}};
 unsigned int maxScore = 0;
-vector<vector<string>> maxScoreWords;
+vector<string> maxScoreWords;
 vector<string> mixedWords;
+size_t cont = 0;
 
 
 string sha256(const string* str)
@@ -54,7 +55,6 @@ void points(const string* word)
 {
   unsigned int letterPoints = 0, differentWords = 0, score;
   int isLetter[26] = {{0}};
-	//{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   // Puntos por letra
   for(size_t ii = 0; ii < word->length(); ii++)
     letterPoints += letters[word->at(ii) - 97];
@@ -73,12 +73,13 @@ void points(const string* word)
   score = letterPoints + differentWords;
   if(score > maxScore){
     maxScore = score;
-    maxScoreWords.push_back(vector<string>(NULL));
-    maxScoreWords.back().push_back(word[0]);
+    maxScoreWords.push_back(word[0]);
+    cont = 0;
   }
   else if(score == maxScore){
-    if(find(maxScoreWords.back().begin(), maxScoreWords.back().end(), word[0]) == maxScoreWords.back().end()){
-      maxScoreWords.back().push_back(word[0]);
+    if(find(maxScoreWords.begin(), maxScoreWords.end(), word[0]) == maxScoreWords.end()){
+      maxScoreWords.push_back(word[0]);
+      ++cont;
     }
   }
 }
@@ -87,7 +88,7 @@ void findAllWords(int posx, int posy, const string* word, bool flag, vector<Node
 {
 	//vector<char> children = nodes[nodes.size() - 1]->charkids();
 	vector<char> children = trie->getChildren(word);
-  char tmp = ' ';
+  const char tmp = ' ';
 	//if(children.size() != 0){
 	if(children[0] != 'N'){
     visited[posx][posy] = true;
@@ -183,9 +184,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	cont += (clock() - start2) / (float)(CLOCKS_PER_SEC);
 	const auto start3 = clock();
   /* Search combinations of the words with maximum score and hash creation */
-  for(size_t i = 0; i < maxScoreWords.back().size(); i++){
+  for(size_t i = 0; i < cont; i++){
     //cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
-    if(mixWords(&maxScoreWords.back().at(i), &hash)) break;
+    if(mixWords(&maxScoreWords.at(maxScoreWords.size() - i - 1), &hash)) break;
   }
   cout << (clock() - start3) / (float)(CLOCKS_PER_SEC) << " hash" << endl;
 	cont += (clock() - start3) / (float)(CLOCKS_PER_SEC);
