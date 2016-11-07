@@ -53,7 +53,7 @@ bool mixWords(const string* word, const string* hash)
 void points(const string* word)
 {
   unsigned int letterPoints = 0, differentWords = 0, score;
-
+  int isLetter[26] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   // Puntos por letra
   for(size_t ii = 0; ii < word->length(); ii++)
     letterPoints += letters[word->at(ii) - 97];
@@ -64,8 +64,8 @@ void points(const string* word)
   // Puntos por entropía
   vector<char> aux;
   for(size_t ii = 0; ii < word->length(); ii++){
-    if(find(aux.begin(), aux.end(), word->at(ii)) == aux.end()){
-      aux.push_back(word->at(ii));
+    if(isLetter[word->at(ii) - 'a'] == 0){
+      isLetter[word->at(ii) - 'a'] = 1;
       differentWords++;
     }
   }
