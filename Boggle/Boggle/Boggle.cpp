@@ -107,6 +107,22 @@ void findAllWords(int posx, int posy, const string* word, bool flag, vector<Node
             }
 						nodes->erase(nodes->end() - 1);
           }
+					if(!flag){
+						vector<Node*> FirstSons = nodes->at(nodes->size()-1)->children(), SecondNodes;
+						for(size_t i = 0; i < FirstSons.size(); ++i){
+							if(FirstSons[i] != NULL){
+								char aux = i + 97;
+								SecondNodes = FirstSons[i]->children();
+								if(SecondNodes[board[a1][a2] - 97] != NULL){
+									nodes->push_back(FirstSons[i]);
+									nodes->push_back(SecondNodes[board[a1][a2] - 97]);
+									string auxword(word[0] + aux + board[a1][a2]);
+									findAllWords(a1, a2, &auxword, flag, &nodes[0]);
+								}
+							}
+						}
+					}
+
           /*if(!flag){
             vector<string> finalWords = trie->check2ndGen(word, &tmp);
             for(size_t i = 0; i < finalWords.size(); ++i){
@@ -167,7 +183,7 @@ int _tmain(int argc, _TCHAR* argv[])
   string tmp = "";
   for(size_t ii = 0; ii < DIM; ii++){
     for(size_t jj = 0; jj < DIM; jj++){
-      incompleteWords = trie->check2ndGen(&tmp, &board[ii][jj]);
+      /*incompleteWords = trie->check2ndGen(&tmp, &board[ii][jj]);
       for(size_t a = 0; a < incompleteWords.size(); a++){
 				string str = incompleteWords[a];
 				vector<Node*> nodes(3);
@@ -175,7 +191,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				nodes[1] = nodes[0]->findChild(&str[0]);
 				nodes[2] = nodes[1]->findChild(&str[1]);
 				findAllWords(ii, jj, &incompleteWords[a], 1, &nodes);
-      }
+      }*/
       string boardLetter(1, board[ii][jj]);
 			vector<Node*> nodes;
 			nodes.push_back(trie->getRoot());
