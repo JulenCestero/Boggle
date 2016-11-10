@@ -84,30 +84,31 @@ void points(const string* word)
   }
 }
 
-void findAllWords(int posx, int posy, const string* word, bool flag, vector<Node*>* nodes)
+void findAllWords(int posx, int posy, const string* word, bool flag)
 {
-	vector<char> children = nodes->at(nodes->size() - 1)->charkids();
-	//vector<char> children = trie->getChildren(word);
+	//vector<char> children = nodes->at(nodes->size() - 1)->charkids();
+	vector<char> children = trie->getChildren(word);
   const char tmp = ' ';
-	if(children.size() != 0){
-	//if(children[0] != 'N'){
+	//if(children.size() != 0){
+	if(children[0] != 'N'){
     visited[posx][posy] = true;
     for(int a1 = posx - 1; a1 < posx + 2; ++a1){
       for(int a2 = posy - 1; a2 < posy + 2; ++a2){
         if(!visited[a1][a2] && a1 >= 0 && a1<DIM && a2 >= 0 && a2<DIM){
-					if(children[board[a1][a2] - 'a'] > 96){
-					//if(children[board[a1][a2] - 'a'] != NULL){
+					//if(children[board[a1][a2] - 'a'] > 96){
+					if(children[board[a1][a2] - 'a'] != NULL){
             string auxword(word[0] + board[a1][a2]);
-						nodes->push_back(nodes->at(nodes->size()-1)->findChild(&board[a1][a2]));
-						if(auxword.length() < 3) findAllWords(a1, a2, &auxword, flag, &nodes[0]);
+						//nodes->push_back(nodes->at(nodes->size()-1)->findChild(&board[a1][a2]));
+						if(auxword.length() < 3) findAllWords(a1, a2, &auxword, flag);
             else{
-              unsigned int consult = trie->consultTrie2(nodes->at(nodes->size() - 1));
+              unsigned int consult = trie->consultTrie(&auxword);
+              //unsigned int consult = trie->consultTrie2(nodes->at(nodes->size() - 1));
               if (consult != 1) points(&auxword);
-							if (consult != 2) findAllWords(a1, a2, &auxword, flag, &nodes[0]);
+							if (consult != 2) findAllWords(a1, a2, &auxword, flag);
             }
-						nodes->erase(nodes->end() - 1);
+						//nodes->erase(nodes->end() - 1);
           }
-					if(!flag){
+					/*if(!flag){
 						vector<Node*> FirstSons = nodes->at(nodes->size()-1)->children(), SecondNodes;
 						for(size_t i = 0; i < FirstSons.size(); ++i){
 							if(FirstSons[i] != NULL){
@@ -121,18 +122,18 @@ void findAllWords(int posx, int posy, const string* word, bool flag, vector<Node
 								}
 							}
 						}
-					}
+					}*/
 
-          /*if(!flag){
+          if(!flag){
             vector<string> finalWords = trie->check2ndGen(word, &tmp);
             for(size_t i = 0; i < finalWords.size(); ++i){
               points(&finalWords[i]);
             }
             vector<string> incompleteWords = trie->check2ndGen(word, &board[a1][a2]);
             for(size_t i = 0; i < incompleteWords.size(); ++i){
-              findAllWords(a1, a2, &incompleteWords.at(i), 1, &nodes[0]);
+              findAllWords(a1, a2, &incompleteWords.at(i), 1);
             }
-          }*/
+          }
         }
       }
     }
@@ -195,7 +196,7 @@ int _tmain(int argc, _TCHAR* argv[])
       string boardLetter(1, board[ii][jj]);
 			vector<Node*> nodes;
 			nodes.push_back(trie->getRoot());
-			findAllWords(ii, jj, &boardLetter, 0, &nodes);
+			findAllWords(ii, jj, &boardLetter, 0);
     }
   }
 	cout << (clock() - start2) / (float)(CLOCKS_PER_SEC) << " buscar en board" << endl;
