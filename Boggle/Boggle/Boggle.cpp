@@ -56,18 +56,18 @@ void points(const string* word)
   unsigned int letterPoints = 0, differentWords = 0, score;
   int isLetter[26] = {{0}};
   // Puntos por letra
-  for(size_t ii = 0; ii < word->length(); ii++)
+  for(size_t ii = 0; ii < word->length(); ii++){
     letterPoints += letters[word->at(ii) - 97];
+	}
 
   // Puntos por longitud
   letterPoints += word->length() - 2;
 
   // Puntos por entropía
-  vector<char> aux;
   for(size_t ii = 0; ii < word->length(); ii++){
     if(isLetter[word->at(ii) - 'a'] == 0){
       isLetter[word->at(ii) - 'a'] = 1;
-      differentWords++;
+      ++differentWords;
     }
   }
   score = letterPoints + differentWords;
@@ -86,50 +86,29 @@ void points(const string* word)
 
 void findAllWords(int posx, int posy, const string* word, bool flag)
 {
-	//vector<char> children = nodes->at(nodes->size() - 1)->charkids();
-	vector<char> children = trie->getChildren(word);
-  const char tmp = ' ';
-	//if(children.size() != 0){
+	Node* current = trie->getLastNode(word);
+	vector<char> children = trie->getChildren(current);
 	if(children[0] != 'N'){
     visited[posx][posy] = true;
     for(int a1 = posx - 1; a1 < posx + 2; ++a1){
       for(int a2 = posy - 1; a2 < posy + 2; ++a2){
         if(!visited[a1][a2] && a1 >= 0 && a1<DIM && a2 >= 0 && a2<DIM){
-					//if(children[board[a1][a2] - 'a'] > 96){
 					if(children[board[a1][a2] - 'a'] != NULL){
             string auxword(word[0] + board[a1][a2]);
-						//nodes->push_back(nodes->at(nodes->size()-1)->findChild(&board[a1][a2]));
 						if(auxword.length() < 3) findAllWords(a1, a2, &auxword, flag);
             else{
-              unsigned int consult = trie->consultTrie(&auxword);
-              //unsigned int consult = trie->consultTrie2(nodes->at(nodes->size() - 1));
+              unsigned int consult = trie->consultTrie(current);
               if (consult != 1) points(&auxword);
 							if (consult != 2) findAllWords(a1, a2, &auxword, flag);
             }
-						//nodes->erase(nodes->end() - 1);
           }
-					/*if(!flag){
-						vector<Node*> FirstSons = nodes->at(nodes->size()-1)->children(), SecondNodes;
-						for(size_t i = 0; i < FirstSons.size(); ++i){
-							if(FirstSons[i] != NULL){
-								char aux = i + 97;
-								SecondNodes = FirstSons[i]->children();
-								if(SecondNodes[board[a1][a2] - 97] != NULL){
-									nodes->push_back(FirstSons[i]);
-									nodes->push_back(SecondNodes[board[a1][a2] - 97]);
-									string auxword(word[0] + aux + board[a1][a2]);
-									findAllWords(a1, a2, &auxword, flag, &nodes[0]);
-								}
-							}
-						}
-					}*/
-
           if(!flag){
-            vector<string> finalWords = trie->check2ndGen(word, &tmp);
+						const char tmp = ' ';
+            vector<string> finalWords = trie->check2ndGen(current, word, &tmp);
             for(size_t i = 0; i < finalWords.size(); ++i){
               points(&finalWords[i]);
             }
-            vector<string> incompleteWords = trie->check2ndGen(word, &board[a1][a2]);
+            vector<string> incompleteWords = trie->check2ndGen(current, word, &board[a1][a2]);
             for(size_t i = 0; i < incompleteWords.size(); ++i){
               findAllWords(a1, a2, &incompleteWords.at(i), 1);
             }
@@ -141,30 +120,19 @@ void findAllWords(int posx, int posy, const string* word, bool flag)
   }
 }
 
-void addDictionary(const vector<string>* aux)
-{
-	for(const auto &word : *aux){	
-		if(word.length() >= 3 && word.length() <= DIM*DIM + 1){
-			trie->getRoot()->addWord(word.c_str());
-    }
-  }
-}
-
 int _tmain(int argc, _TCHAR* argv[])
 {
   /* Charge Trie, hash and auxiliar variable for board */
   const auto start = clock();
-  string boardstring, hash, line;
+  string boardstring, hash;
   getline(cin, boardstring);
   getline(cin, hash);
-	trie->addDictionary();
-	/*char a = 'a', n = 'b', e = 'c', s = 's';
-	Node* aNode = trie->getRoot()->findChild(&a)->findChild(&n)->findChild(&e)->findChild(&s);
-	vector<char> thekids = aNode->charkids();
-	for(size_t i = 0; i<thekids.size(); ++i){
-		if(thekids[i] < 97){
-		}
-	}*/
+	char buffer[80];
+  char* result;
+	Node* root = trie->getRoot();
+  while((result = fgets(buffer, 80, stdin)) != NULL){
+    root->addWord(result);
+  }
 
   /* Charge the letters into the board */
   for(size_t ii = 0; ii < DIM; ii++){
@@ -178,28 +146,22 @@ int _tmain(int argc, _TCHAR* argv[])
   string tmp = "";
   for(size_t ii = 0; ii < DIM; ii++){
     for(size_t jj = 0; jj < DIM; jj++){
-      /*incompleteWords = trie->check2ndGen(&tmp, &board[ii][jj]);
-      for(size_t a = 0; a < incompleteWords.size(); a++){
-				string str = incompleteWords[a];
-				vector<Node*> nodes(3);
-				nodes[0] = trie->getRoot();
-				nodes[1] = nodes[0]->findChild(&str[0]);
-				nodes[2] = nodes[1]->findChild(&str[1]);
-				findAllWords(ii, jj, &incompleteWords[a], 1, &nodes);
-      }*/
+      incompleteWords = trie->check2ndGen(root, &tmp, &board[ii][jj]);
+      for(size_t kk = 0; kk < incompleteWords.size(); ++kk){
+				findAllWords(ii, jj, &incompleteWords[kk], 1);
+      }
       string boardLetter(1, board[ii][jj]);
-			vector<Node*> nodes;
-			nodes.push_back(trie->getRoot());
 			findAllWords(ii, jj, &boardLetter, 0);
     }
   }
   /* Search combinations of the words with maximum score and hash creation */
   for(size_t i = 0; i <= cont; i++){
-    //cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
-    if(mixWords(&maxScoreWords.at(maxScoreWords.size() - i - 1), &hash)) break;
+    if(mixWords(&maxScoreWords.at(maxScoreWords.size() - i - 1), &hash)){
+			break;
+		}
   }
 
   delete trie;
-  cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << endl;
+  cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << endl;		//	QUITAR ESTO
   return 0;
 }

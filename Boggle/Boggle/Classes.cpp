@@ -3,7 +3,6 @@
 
 Node::Node()
 {
-	mMarker = false;
   fill_n(mChildren,26,nullptr);
 }
 
@@ -40,21 +39,16 @@ void Node::addWord(const char* word)
   else mMarker = true;
 }
 
-void Trie::addDictionary()
-{
-  char buffer[80];
-  char* result;
-  while((result = fgets(buffer, 80, stdin)) != NULL){
-    root->addWord(result);
-  }
+Node* Trie::getLastNode(const string* s){
+	Node* current = root;
+  for(size_t i = 0; i < s->length(); i++){
+    current = current->findChild(&s->at(i));
+	}
+	return current;
 }
 
-int Trie::consultTrie(const string* s)
+int Trie::consultTrie(Node* current)
 {
-  Node* current = root;
-  for(size_t i = 0; i < s->length(); i++)
-    current = current->findChild(&s->at(i));
-
   if(current->wordMarker()){
     if(!current->children().empty()) return 3;
     else return 2;
@@ -62,25 +56,9 @@ int Trie::consultTrie(const string* s)
   else return 1;
 }
 
-int Trie::consultTrie2(Node* node)
+vector<char> Trie::getChildren(Node* current)
 {
-  if(node->wordMarker()){
-    if(!node->children().empty()) return 3;
-    else return 2;
-  }
-  else return 1;
-}
-
-
-
-vector<char> Trie::getChildren(const string* s)
-{
-  vector<char> kids;
-  kids.resize(26);
-  Node* current = root;
-  for(size_t i = 0; i < s->length(); ++i){
-    current = current->findChild(&s->at(i));
-  }
+  vector<char> kids(26);
 	if(current != NULL){
 		vector<Node*> childNodes = current->children();
 		for(unsigned char i = 0; i < childNodes.size(); ++i){
@@ -93,14 +71,9 @@ vector<char> Trie::getChildren(const string* s)
 	return kids;
 }
 
-vector<string> Trie::check2ndGen(const string* s, const char* sn)
+vector<string> Trie::check2ndGen(Node* current, const string* s, const char* sn)
 {
-  Node* current = root;
   vector<string> incompleteWords;
-  for(size_t ii = 0; ii < s->length(); ++ii){
-    current = current->findChild(&s->at(ii));
-  }
-
   vector<Node*> FirstSons = current->children(), SecondNodes;
   for(size_t i = 0; i < FirstSons.size(); ++i){
     if(FirstSons[i] != NULL){
