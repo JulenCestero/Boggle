@@ -153,17 +153,11 @@ void addDictionary(const vector<string>* aux)
 int _tmain(int argc, _TCHAR* argv[])
 {
   /* Charge Trie, hash and auxiliar variable for board */
-	double cont = 0;
+  const auto start = clock();
   string boardstring, hash, line;
   getline(cin, boardstring);
   getline(cin, hash);
-	const auto start = clock();
 	trie->addDictionary();
-
-	cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << " meter palabras en trie" << endl;
-	cont += (clock() - start) / (float)(CLOCKS_PER_SEC);
-	const auto start2 = clock();
-
 	/*char a = 'a', n = 'b', e = 'c', s = 's';
 	Node* aNode = trie->getRoot()->findChild(&a)->findChild(&n)->findChild(&e)->findChild(&s);
 	vector<char> thekids = aNode->charkids();
@@ -199,18 +193,13 @@ int _tmain(int argc, _TCHAR* argv[])
 			findAllWords(ii, jj, &boardLetter, 0);
     }
   }
-	cout << (clock() - start2) / (float)(CLOCKS_PER_SEC) << " buscar en board" << endl;
-	cont += (clock() - start2) / (float)(CLOCKS_PER_SEC);
-	const auto start3 = clock();
   /* Search combinations of the words with maximum score and hash creation */
-  for(size_t i = 0; i < cont; i++){
+  for(size_t i = 0; i <= cont; i++){
     //cout << maxScoreWords.back().at(i) << " with " << maxScore << " points" << endl;
     if(mixWords(&maxScoreWords.at(maxScoreWords.size() - i - 1), &hash)) break;
   }
-  cout << (clock() - start3) / (float)(CLOCKS_PER_SEC) << " hash" << endl;
-	cont += (clock() - start3) / (float)(CLOCKS_PER_SEC);
 
-	cout << cont << " TOTAL" << endl;
   delete trie;
+  cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << endl;
   return 0;
 }
