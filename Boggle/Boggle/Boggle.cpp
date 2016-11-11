@@ -104,11 +104,11 @@ void findAllWords(int posx, int posy, const string* word, bool flag)
           }
           if(!flag){
 						const char tmp = ' ';
-            vector<string> finalWords = trie->check2ndGen(current, word, &tmp);
-            for(size_t i = 0; i < finalWords.size(); ++i){
-              points(&finalWords[i]);
+            vector<string> incompleteWords = trie->check2ndGen(current, word, &tmp);
+            for(size_t i = 0; i < incompleteWords.size(); ++i){
+              points(&incompleteWords[i]);
             }
-            vector<string> incompleteWords = trie->check2ndGen(current, word, &board[a1][a2]);
+            incompleteWords = trie->check2ndGen(current, word, &board[a1][a2]);
             for(size_t i = 0; i < incompleteWords.size(); ++i){
               findAllWords(a1, a2, &incompleteWords.at(i), 1);
             }
