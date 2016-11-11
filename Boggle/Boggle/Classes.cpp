@@ -75,10 +75,9 @@ vector<string> Trie::check2ndGen(Node* current, const string* s, const char* sn)
 {
   vector<string> incompleteWords;
   vector<Node*> FirstSons = current->children(), SecondNodes;
-	char aux;
   for(size_t i = 0; i < FirstSons.size(); ++i){
     if(FirstSons[i] != NULL){
-      aux = i + 97;
+      char aux = i + 97;
       if(sn[0] != ' '){
         SecondNodes = FirstSons[i]->children();
         if(SecondNodes[sn[0] - 97] != NULL) incompleteWords.push_back(s[0] + aux + sn[0]);

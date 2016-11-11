@@ -31,7 +31,7 @@ string sha256(const string* str)
   return ss.str();
 }
 
-string mixWords(const string* word, const string* hash)
+bool mixWords(const string* word, const string* hash)
 {
   string bin, aux, auxHash;
   for(size_t ii = 0; ii < pow(2, word->length()); ii++){
@@ -44,10 +44,11 @@ string mixWords(const string* word, const string* hash)
     }
     auxHash = sha256(&aux);
     if(hash->compare(auxHash) == 0){
-      return aux;
+      cout << aux << endl;
+      return 1;
     }
   }
-  return " ";
+  return 0;
 }
 
 void points(const string* word)
@@ -66,7 +67,7 @@ void points(const string* word)
   for(size_t ii = 0; ii < word->length(); ii++){
     if(isLetter[word->at(ii) - 'a'] == 0){
       isLetter[word->at(ii) - 'a'] = 1;
-      differentWords++;
+      ++differentWords;
     }
   }
   score = letterPoints + differentWords;
@@ -154,14 +155,12 @@ int _tmain(int argc, _TCHAR* argv[])
     }
   }
   /* Search combinations of the words with maximum score and hash creation */
-	string res;
   for(size_t i = 0; i <= cont; i++){
-		res = mixWords(&maxScoreWords.at(maxScoreWords.size() - i - 1), &hash);
-    if(res != " "){
-			cout << res << endl;
+    if(mixWords(&maxScoreWords.at(maxScoreWords.size() - i - 1), &hash)){
 			break;
 		}
   }
+
   delete trie;
   cout << (clock() - start) / (float)(CLOCKS_PER_SEC) << endl;		//	QUITAR ESTO
   return 0;
