@@ -19,15 +19,6 @@ vector<Node*> Node::children(){
 	return kids;
 }
 
-vector<char> Node::charkids(){
-	vector<char> kids(26);
-	for(size_t i = 0; i<26; ++i){
-		if(mChildren[i] != NULL)
-			kids[i] = i + 'a';
-	}
-	return kids;
-}
-
 void Node::addWord(const char* word)
 {
   auto aux = *word;
